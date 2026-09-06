@@ -318,16 +318,20 @@ tbody tr:hover{background:rgba(160,120,70,.06)}
 /* ===================== شريط التبويبات + زر عائم ===================== */
 .tabsbar{
   position:fixed;left:0;right:0;bottom:0;z-index:130;
-  display:grid;grid-template-columns:repeat(6,1fr);gap:5px;
+  display:flex;flex-wrap:nowrap;justify-content:flex-start;
+  gap:5px;overflow-x:auto;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;
   padding:8px 8px calc(8px + env(safe-area-inset-bottom,0px));
   background:rgba(253,248,238,.96);backdrop-filter:blur(8px);
   border-top:1px solid var(--line);
   box-shadow:0 -6px 24px rgba(120,90,50,.18);
+  scrollbar-width:none;
 }
+.tabsbar::-webkit-scrollbar{display:none}
 .tabsbar .tb{
   border:none;border-radius:14px;cursor:pointer;font-family:inherit;
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
-  min-height:54px;font-size:.68rem;font-weight:800;padding:5px 2px;
+  min-height:54px;min-width:64px;flex:0 0 auto;scroll-snap-align:center;
+  font-size:.66rem;font-weight:800;padding:5px 8px;
   background:transparent;color:var(--muted);
   transition:transform .15s,background .25s,color .25s;
   position:relative;
@@ -533,12 +537,48 @@ tbody tr:hover{background:rgba(160,120,70,.06)}
 /* ===== أزرار المظهر ===== */
 .mode{border-color:var(--line)}
 .mode.on{background:var(--gold);color:#FDF8EE;border-color:var(--gold);font-weight:800}
+/* ===== جدول أحداث اليوم ===== */
+.agenda{margin-bottom:18px;background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:14px 16px;box-shadow:0 6px 16px rgba(120,90,50,.10)}
+.agenda h2{font-size:1rem;color:var(--gold);margin-bottom:10px}
+.agenda-list{display:flex;flex-direction:column;gap:6px}
+.ag-item{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:10px;background:var(--card);border:1px solid var(--line);font-size:.82rem}
+.ag-item.past{opacity:.42}
+.ag-item.nowev{background:linear-gradient(135deg,#FDF3DE,#F7E6C4);border-color:var(--gold)}
+.ag-ic{font-size:1rem;flex:0 0 auto}
+.ag-name{font-weight:800;flex:1}
+.ag-time{font-weight:800;color:var(--gold);direction:ltr}
+.ag-rest{color:var(--muted);font-size:.72rem;min-width:58px;text-align:left;direction:ltr}
+/* ===== تبويب القبلة ===== */
+.qibla-band{background:linear-gradient(150deg,#2E4A74,#1F3556);border:1px solid #5B7BAE;border-radius:18px;padding:16px 18px;color:#EAF1FA;margin-bottom:18px;box-shadow:0 12px 30px rgba(30,50,90,.35)}
+.qibla-band .qibla-head{display:flex;justify-content:space-between;align-items:center}
+.qibla-band .qibla-title{color:#FFE3A8;font-weight:800;font-size:1.05rem}
+.qibla-band .qibla-deg{color:#FFE3A8;font-size:1.6rem;font-weight:800;direction:ltr}
+.qibla-compass{display:flex;justify-content:center;margin:14px 0 8px}
+.qibla-rose{position:relative;width:190px;height:190px;border-radius:50%;background:radial-gradient(circle at 32% 28%,#3D5F92,#22375A);border:3px solid rgba(255,255,255,.28);box-shadow:inset 0 0 30px rgba(0,0,0,.35),0 10px 30px rgba(0,0,0,.35)}
+.qibla-rose span{position:absolute;font-weight:800;font-size:.7rem;color:#FFE3A8}
+.qr-n{top:8px;left:50%;transform:translateX(-50%)}
+.qr-s{bottom:8px;left:50%;transform:translateX(-50%)}
+.qr-e{right:10px;top:50%;transform:translateY(-50%)}
+.qr-w{left:10px;top:50%;transform:translateY(-50%)}
+.qibla-arrow-big{position:absolute;left:50%;bottom:52%;transform:translateX(-50%) rotate(0deg);transform-origin:50% 100%;color:#FFD98F;font-size:2.4rem;line-height:1;transition:transform .7s cubic-bezier(.34,1.3,.5,1);filter:drop-shadow(0 3px 6px rgba(0,0,0,.4))}
+.qibla-band .qibla-dir{color:#CFE0F4;font-size:.9rem;text-align:center;margin:0 0 12px}
+.qibla-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
+.qibla-stat{display:flex;flex-direction:column;align-items:center;gap:4px;background:rgba(255,255,255,.08);border-radius:12px;padding:9px 6px}
+.qibla-stat span{font-size:.66rem;color:#B8CCE6;text-align:center}
+.qibla-stat b{font-size:.95rem;color:#FFE3A8;direction:ltr}
+.qibla-band .hint{color:#A9C2DE;display:block;text-align:center;font-size:.72rem}
+/* ===== تبويب رمضان ===== */
+.ramadan-band{background:linear-gradient(150deg,#3E5B89,#2A3E5E);border:1px solid #5B7BAE;border-radius:18px;padding:16px 18px;color:#F2ECF7;margin-bottom:18px;box-shadow:0 12px 30px rgba(30,50,90,.35)}
+.rm-title{font-size:1.35rem;font-weight:800;color:#FFE3A8;text-align:center;margin-bottom:10px}
+.rm-status{font-size:1rem;font-weight:700;text-align:center;color:#FFF;margin-bottom:6px}
+.rm-sub{font-size:.8rem;text-align:center;color:#C5D6EC;margin-bottom:14px}
+.rm-table-wrap h3{color:#FFE3A8;font-size:.9rem;margin:12px 0 8px}
+.rm-table th{background:rgba(255,255,255,.10);color:#FFE3A8}
+.rm-table td{background:rgba(255,255,255,.05)}
+.rm-table .rm-now td{background:rgba(255,220,140,.22);font-weight:800}
+.rm-dua{background:rgba(255,255,255,.08);border-radius:12px;padding:12px 14px;font-family:"Amiri Quran","Amiri",serif;text-align:center;margin-top:12px;font-size:.98rem;line-height:1.9}
 /* ===== الوضع الداكن ===== */
 [data-theme="dark"]{
-  --bg1:#16110D; --bg2:#201813; --card:#2B211A; --card2:#32281F;
-  --line:#453529; --text:#EDE0CE; --muted:#AE9A84;
-  --gold:#D8A76A; --green:#E3AC6A; --red:#E08A72; --blue:#7FA6D6;
-}
 [data-theme="dark"] body{background-image:radial-gradient(1000px 500px at 80% -10%,rgba(216,160,105,.09),transparent),linear-gradient(160deg,var(--bg1),var(--bg2) 55%,#120D0A)}
 [data-theme="dark"] h1,.clockbox .now{color:var(--text)}
 [data-theme="dark"] .section,[data-theme="dark"] .greet,[data-theme="dark"] .alertbar,[data-theme="dark"] .toast,
@@ -561,6 +601,10 @@ tbody tr:hover{background:rgba(160,120,70,.06)}
 [data-theme="dark"] .tp-pill.done{background:linear-gradient(135deg,#263A1E,#1F3319);border-color:#5E7D2E}
 [data-theme="dark"] .tp-pill.done .tp-t,.tp-pill.done .tp-x{color:#A7D073}
 [data-theme="dark"] .tprog-sec{background:#241C15}
+[data-theme="dark"] .agenda{background:#241C15}
+[data-theme="dark"] .ag-item{background:#2B211A;border-color:#3B2F24}
+[data-theme="dark"] .ag-item.nowev{background:linear-gradient(135deg,#3B2E20,#312818);border-color:var(--gold)}
+[data-theme="dark"] .qibla-band,[data-theme="dark"] .ramadan-band{box-shadow:0 12px 30px rgba(0,0,0,.5)}
 [data-theme="dark"] .wg-cell{background:#241C15;color:var(--muted)}
 [data-theme="dark"] .wg-cell.on{background:linear-gradient(135deg,#D9A25E,#C08A4B);color:#FFF}
 [data-theme="dark"] .toggle::after{background:#F1E6D4}
@@ -652,15 +696,6 @@ tbody tr:hover{background:rgba(160,120,70,.06)}
         </div>
       </section>
 
-      <section class="qibla hidden" id="qiblaSec">
-        <div class="qibla-head">
-          <span class="qibla-title" data-i18n="qiblaTitle">🕋 اتجاه القبلة</span>
-          <span class="qibla-deg" id="qiblaDeg">--°</span>
-        </div>
-        <div class="qibla-dir" id="qiblaDir">…</div>
-        <div class="qibla-bar"><div class="qibla-arrow" id="qiblaArrow">▲</div></div>
-      </section>
-
       <section class="hadith" id="hadithBox">
         <div class="hd-head">
           <span class="hd-title" data-i18n="hadithTitle">📖 احاديث الرسول صلى الله عليه وسلم</span>
@@ -678,6 +713,11 @@ tbody tr:hover{background:rgba(160,120,70,.06)}
         <div class="ay-text show" id="ayText">…</div>
         <div class="ay-ref" id="ayRef"></div>
       </section>
+
+      <section class="agenda hidden">
+        <h2 data-i18n="agendaTitle">⏰ أحداث اليوم</h2>
+        <div class="agenda-list" id="agendaList"></div>
+      </section>
     </div>
 
     <!-- ===== تبويب: الصلاة ===== -->
@@ -689,7 +729,10 @@ tbody tr:hover{background:rgba(160,120,70,.06)}
         <div class="week-grid" id="weekGrid"></div>
         <div class="week-foot" id="weekFoot"></div>
       </section>
+    </div>
 
+    <!-- ===== تبويب: الجدول ===== -->
+    <div class="tab-panel" data-tab="table">
       <section class="section">
         <h2>
           <span data-i18n="tableTitle">🗓️ جدول أوقات الصلاة</span>
@@ -718,6 +761,48 @@ tbody tr:hover{background:rgba(160,120,70,.06)}
           </table>
         </div>
         <div class="status" id="tblStatus"></div>
+      </section>
+    </div>
+
+    <!-- ===== تبويب: القبلة ===== -->
+    <div class="tab-panel" data-tab="qibla">
+      <section class="qibla-band" id="qiblaBand">
+        <div class="qibla-head">
+          <span class="qibla-title" data-i18n="qiblaTitle">🕋 اتجاه القبلة</span>
+          <span class="qibla-deg" id="qiblaDeg">--°</span>
+        </div>
+        <div class="qibla-compass">
+          <div class="qibla-rose" id="qiblaRose">
+            <span class="qr-n">N</span><span class="qr-e">E</span><span class="qr-s">S</span><span class="qr-w">W</span>
+            <div class="qibla-arrow-big" id="qiblaArrow">▲</div>
+          </div>
+        </div>
+        <div class="qibla-dir" id="qiblaDir">…</div>
+        <div class="qibla-stats">
+          <div class="qibla-stat"><span data-i18n="qiblaFromNorth">من الشمال</span><b id="qiblaDeg2">--°</b></div>
+          <div class="qibla-stat"><span data-i18n="qiblaDist">المسافة للكعبة</span><b id="qiblaDist">—</b></div>
+          <div class="qibla-stat"><span data-i18n="qiblaLive">بوصلة الجهاز</span><b id="qiblaLive">…</b></div>
+        </div>
+        <span class="hint" data-i18n="qiblaHint">وجّه الهاتف أفقياً ودار به حتى يلتقي سهم القبلة المغربي بالاتجاه المطلوب — يعمل دون إنترنت</span>
+      </section>
+    </div>
+
+    <!-- ===== تبويب: رمضان ===== -->
+    <div class="tab-panel" data-tab="ramadan">
+      <section class="ramadan-band" id="ramadanBand">
+        <div class="rm-title">🌙 <span data-i18n="ramRamadan">رمضان</span></div>
+        <div class="rm-status" id="rmStatus">…</div>
+        <div class="rm-sub" id="rmSub">…</div>
+        <div class="rm-table-wrap hidden" id="rmTableWrap">
+          <h3 data-i18n="rmTableTitle">🗓️ جدول سحور وإفطار الأيام القادمة</h3>
+          <div class="tbl-scroll">
+            <table class="rm-table">
+              <thead><tr><th data-i18n="rmDateCol">اليوم</th><th data-i18n="rmHijriCol">هجري</th><th data-i18n="suhoorLabel">السحور</th><th data-i18n="iftarLabel">الإفطار</th></tr></thead>
+              <tbody id="rmBody"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="rm-dua" id="rmDua"></div>
       </section>
     </div>
 
@@ -795,17 +880,25 @@ tbody tr:hover{background:rgba(160,120,70,.06)}
 
 <!-- ===== شريط التبويبات ===== -->
 <nav class="tabsbar" aria-label="تبويبات">
-  <button class="tb rem active-stop" id="tabReminder">
-    <span class="tb-ic">🔔</span>
-    <span data-i18n="tabRem">التذكير</span>
-  </button>
-  <button class="tb active" data-go="now">
-    <span class="tb-ic">🕌</span>
+  <button class="tb" data-go="now">
+    <span class="tb-ic">🏠</span>
     <span data-i18n="tabNow">الآن</span>
   </button>
   <button class="tb" data-go="pray">
-    <span class="tb-ic">🧭</span>
+    <span class="tb-ic">🕌</span>
     <span data-i18n="tabPray">الصلاة</span>
+  </button>
+  <button class="tb" data-go="table">
+    <span class="tb-ic">📅</span>
+    <span data-i18n="tabTable">الجدول</span>
+  </button>
+  <button class="tb" data-go="qibla">
+    <span class="tb-ic">🧭</span>
+    <span data-i18n="tabQibla">القبلة</span>
+  </button>
+  <button class="tb" data-go="ramadan">
+    <span class="tb-ic">🌙</span>
+    <span data-i18n="tabRamadan">رمضان</span>
   </button>
   <button class="tb" data-go="wird">
     <span class="tb-ic">📖</span>
@@ -818,6 +911,10 @@ tbody tr:hover{background:rgba(160,120,70,.06)}
   <button class="tb" id="tabSettings">
     <span class="tb-ic">⚙️</span>
     <span data-i18n="tabSettings">الإعدادات</span>
+  </button>
+  <button class="tb rem active-stop" id="tabReminder">
+    <span class="tb-ic">🔔</span>
+    <span data-i18n="tabRem">التذكير</span>
   </button>
 </nav>
 
@@ -912,8 +1009,8 @@ tbody tr:hover{background:rgba(160,120,70,.06)}
         <button class="btn sm" id="updateUrlSave">💾 حفظ رابط التحديثات</button>
         <button class="btn sm ghost" id="updateCheckNow">🔍 فحص الآن</button>
       </div>
-      <span class="hint" id="updateStatus">الإصدار 11 — بدون رابط تحديث سيعمل التطبيق دائماً دون إنترنت</span>
-      <span class="hint">انشر ملفات التطبيق على GitHub Pages مجاناً (تعليمات في ملف README داخل مجلد المشروع) ثم ضع الرابط هنا، وسيتحدّث التطبيق تلقائياً</span>
+      <span class="hint" id="updateStatus">الإصدار 12 — الفحص التلقائي مفعّل</span>
+      <span class="hint">يُفحص التطبيق تلقائياً عند كل فتح، وعند عودتك له، وكل 4 ساعات — من الرابط الافتراضي: <b style="direction:ltr">valenciallc.github.io/prayer-app</b> بلا أي إعداد. غيّر الرابط لمشروع GitHub Pages خاص بك ثم «فحص الآن»</span>
     </div>
 
     <div class="s-group">
@@ -1491,6 +1588,14 @@ ar:{
   qiblaTitle:"🕋 اتجاه القبلة",themeGroup:"🎨 المظهر",themeGroupSub:"ليلي مريح للعين",
   themeLight:"فاتح",themeDark:"داكن",themeAuto:"تلقائي",themeHint:"النمط التلقائي يتبع مظهر هاتفك، ويتحوّل ليلياً من تلقاء نفسه",
   markDone:"ليميز الصلاة بعد أدائها",
+  tabTable:"الجدول",tabQibla:"القبلة",tabRamadan:"رمضان",
+  agendaTitle:"⏰ أحداث اليوم",agendaPast:"انتهى",
+  qiblaFromNorth:"من الشمال",qiblaDist:"المسافة للكعبة",qiblaLive:"بوصلة الجهاز",
+  qiblaHint:"وجّه الهاتف أفقياً ودار به حتى يلتقي السهم بالاتجاه المطلوب — يعمل دون إنترنت",
+  qiblaCalm:"بوصلة متاحة",qiblaNone:"بوصلة غير متاحة",
+  ramRamadan:"رمضان كريم",rmCountTitle:"متبقٍ على رمضان",rmToday:"اليوم: {0} رمضان {1}",rmTableTitle:"🗓️ جدول سحور وإفطار الأيام القادمة",
+  rmDateCol:"اليوم",rmHijriCol:"هجري",rmSuhoor:"سحور",rmIftar:"إفطار",rmNow:"اليوم",
+  km:"كم",daysRemaining:"يوم",
 },
 en:{
   title:"Prayer & Iqama Times Display",header:"Prayer & Iqama Times Display",
@@ -1522,6 +1627,14 @@ en:{
   qiblaTitle:"🕋 Qibla direction",themeGroup:"🎨 Appearance",themeGroupSub:"easy-on-the-eye night mode",
   themeLight:"Light",themeDark:"Dark",themeAuto:"Auto",themeHint:"Auto follows your phone's appearance and turns dark on its own",
   markDone:"Tap to mark the prayer as done",
+  tabTable:"Schedule",tabQibla:"Qibla",tabRamadan:"Ramadan",
+  agendaTitle:"⏰ Today's events",agendaPast:"done",
+  qiblaFromNorth:"From north",qiblaDist:"Dist. to Kaaba",qiblaLive:"Device compass",
+  qiblaHint:"Hold the phone flat and turn it until the arrow meets the target direction — works offline",
+  qiblaCalm:"Compass available",qiblaNone:"Compass unavailable",
+  ramRamadan:"Ramadan Kareem",rmCountTitle:"Time to Ramadan",rmToday:"Today: {0} Ramadan {1}",rmTableTitle:"🗓️ Suhoor & Iftar for the coming days",
+  rmDateCol:"Day",rmHijriCol:"Hijri",rmSuhoor:"Suhoor",rmIftar:"Iftar",rmNow:"Today",
+  km:"km",daysRemaining:"days",
 },
 ur:{
   title:"نماز اور اقامت کے اوقات",header:"نماز اور اقامت کے اوقات",
@@ -1553,6 +1666,14 @@ ur:{
   qiblaTitle:"🕋 سمت قبلہ",themeGroup:"🎨 شکل و صورت",themeGroupSub:"آنکھوں کو راحت دینے والا رات کا موڈ",
   themeLight:"روشن",themeDark:"اندھیرا",themeAuto:"خودکار",themeHint:"خودکار موڈ آپ کے فون کی شکل کی پیروی کرتا ہے",
   markDone:"نماز ادا کرنے کے بعد نشان لگائیں",
+  tabTable:"جدول",tabQibla:"قبلہ",tabRamadan:"رمضان",
+  agendaTitle:"⏰ آج کے واقعات",agendaPast:"ختم",
+  qiblaFromNorth:"شمال سے",qiblaDist:"کعبہ تک فاصلہ",qiblaLive:"ڈیوائس کا کمپاس",
+  qiblaHint:"فون افقی رکھیں اور اس وقت تک گھمائیں جب تک تیر آپ کی سمت پر نہ آ جائے — بغیر انٹرنیٹ",
+  qiblaCalm:"کمپاس دستیاب",qiblaNone:"کمپاس دستیاب نہیں",
+  ramRamadan:"رمضان مبارک",rmCountTitle:"رمضان میں باقی",rmToday:"آج: {0} رمضان {1}",rmTableTitle:"🗓️ آئندہ دنوں کی سحری و افطار",
+  rmDateCol:"دن",rmHijriCol:"ہجری",rmSuhoor:"سحری",rmIftar:"افطار",rmNow:"آج",
+  km:"کلومیٹر",daysRemaining:"دن",
 }
 };
 const PRAYER_NAMES={
@@ -2004,6 +2125,8 @@ function render(){
   renderTprog(now,ds);
   renderRamadan(now,ds);
   renderQibla();
+  renderAgenda(now,ds);
+  renderRamadanTab(now);
 }
 /* ============================= إنجاز صلوات اليوم ============================= */
 function isManuallySet(ds,key){try{return !!(attendance.manual&&attendance.manual[ds+"|"+key])}catch(e){return false}}
@@ -2065,19 +2188,120 @@ function qiblaBearing(){
   return (Math.atan2(y,x)*180/Math.PI+360)%360;
 }
 const QDIR=["شمال","شمال-شمال شرق","شمال شرق","شرق-شمال شرق","شرق","شرق-جنوب شرق","جنوب شرق","جنوب-جنوب شرق","جنوب","جنوب-جنوب غرب","جنوب غرب","غرب-جنوب غرب","غرب","غرب-شمال غرب","شمال غرب","شمال-شمال غرب"];
+function qiblaDistanceKm(){
+  const lat=parseFloat(LOC.lat),lon=parseFloat(LOC.lng);
+  if(isNaN(lat)||isNaN(lon))return null;
+  const R=6371,a=lat*Math.PI/180,b=KAABA.lat*Math.PI/180,
+    dp=(KAABA.lat-lat)*Math.PI/180,dl=(KAABA.lon-lon)*Math.PI/180;
+  const h=Math.sin(dp/2)*Math.sin(dp/2)+Math.cos(a)*Math.cos(b)*Math.sin(dl/2)*Math.sin(dl/2);
+  return R*2*Math.atan2(Math.sqrt(h),Math.sqrt(1-h));
+}
 function renderQibla(){
-  const sec=$("qiblaSec");if(!sec)return;
+  const sec=$("qiblaBand");if(!sec)return;
   const br=qiblaBearing();
-  if(br==null){if(!sec.classList.contains("hidden"))sec.classList.add("hidden");return}
-  sec.classList.remove("hidden");
-  const dir=qbHead==null?0:(360-qbHead);
-  const txt="قبلتكم "+QDIR[Math.round(br/22.5)%16]+" ("+br.toFixed(0)+"° من الشمال)";
-  if(lastQbTxt!==txt){lastQbTxt=txt;$("qiblaDir").textContent=txt}
-  const deg=(360-qbHead+br)%360;
-  $("qiblaDeg").textContent=Math.round(br)+"°";
+  const degN=$("qiblaDeg"),deg2=$("qiblaDeg2"),dir=$("qiblaDir"),dist=$("qiblaDist"),live=$("qiblaLive");
+  if(br==null){
+    if(sec.classList.contains("hidden"))sec.classList.remove("hidden");
+    if(dir)dir.textContent="—";
+    return;
+  }
+  const txt=QDIR[Math.round(br/22.5)%16]+" · "+br.toFixed(0)+"°";
+  if(lastQbTxt!==txt){lastQbTxt=txt;if(dir)dir.textContent=txt}
+  if(degN)degN.textContent=br.toFixed(0)+"°";
+  if(deg2)deg2.textContent=br.toFixed(0)+"°";
+  if(dist){
+    const km=qiblaDistanceKm();
+    dist.textContent=(km==null)?"—":(km>=1000?(km/1000).toFixed(1)+"k"+"m":km.toFixed(0)+" "+T("km"));
+  }
+  if(live)live.textContent=qbHead==null?T("qiblaNone"):T("qiblaCalm");
   const ar=$("qiblaArrow");
+  const deg=(360-qbHead+br)%360;
   const target="rotate("+(qbHead==null?br:deg)+"deg)";
-  if(ar.getAttribute("data-r")!==target){ar.setAttribute("data-r",target);ar.style.transform="translateX(-50%) "+target}
+  if(ar&&ar.getAttribute("data-r")!==target){ar.setAttribute("data-r",target);ar.style.transform="translateX(-50%) "+target}
+}
+/* ============================= جدول أحداث اليوم ============================= */
+let lastAgendaKey="";
+function renderAgenda(now,ds){
+  const ev=$("agendaList");if(!ev)return;
+  const list=buildEvents(ds);
+  const wrap=ev.parentNode;
+  if(!list.length){if(wrap&&wrap.classList&&!wrap.classList.contains("hidden"))wrap.classList.add("hidden");ev.innerHTML="";return}
+  let html="",curKey="";
+  for(const e of list){
+    if(e.type==="sunrise")continue;
+    const dt=hmToDate(ds,e.time);
+    const past=dt<=now;
+    const isCurrent=!past&&dt-now<120000;
+    if(isCurrent)curKey=e.type+":"+e.key;
+    const icon=e.type==="adhan"?"🔔":(e.type==="iqama"?"🕌":"🌄");
+    const rest=past?"—":hms(dt-now);
+    html+='<div class="ag-item'+(past?" past":"")+(isCurrent?" nowev":"")+'">'+
+      '<span class="ag-ic">'+icon+'</span>'+
+      '<span class="ag-name">'+e.label+'</span>'+
+      '<span class="ag-time">'+e.time+'</span>'+
+      '<span class="ag-rest">'+(past?T("agendaPast"):rest)+'</span></div>';
+  }
+  const key=list.map(e=>e.type+":"+e.time).join("|")+"|"+curKey+"|"+now.toISOString().slice(11,13)+":"+now.toISOString().slice(14,16)+":"+now.toISOString().slice(17,19);
+  if(key!==lastAgendaKey){lastAgendaKey=key;ev.innerHTML=html}
+  const p=ev.parentNode;if(p&&p.classList&&p.classList.contains("hidden"))p.classList.remove("hidden");
+}
+/* ============================= تبويب رمضان ============================= */
+let lastRmKey="";
+const RM_DUAS=["اللهم أهلّه علينا باليُمن والإيمان والسلامة والإسلام","اللهم أعنّا على الصيام والقيام وغضِّ البصر وحفظ اللسان","ذَهَبَ الظَّمَأُ وابْتَلَّتِ العُرُوقُ وثَبَتَ الأجرُ إِنْ شاءَ الله"];
+function nextRamadanStart(){
+  const st=Math.floor(Date.now()/86400000)*86400000-3*3600000;
+  const start=new Date(st);
+  for(let i=0;i<390;i++){
+    const d=new Date(start.getTime()+i*86400000);
+    const h=hijriFromGregorian(d.getFullYear(),d.getMonth()+1,d.getDate());
+    if(h.month===8)return d;
+  }
+  return null;
+}
+function renderRamadanTab(now){
+  const band=$("ramadanBand");if(!band)return;
+  const st=$("rmStatus"),sub=$("rmSub"),wrap=$("rmTableWrap"),body=$("rmBody"),dua=$("rmDua");
+  const todayH=hijriFromGregorian(now.getFullYear(),now.getMonth()+1,now.getDate());
+  const inRamadan=todayH.month===8;
+  const start=nextRamadanStart();
+  let key=inRamadan+"|"+(start?dateStr(start):"")+"|"+todayStr();
+  if(key!==lastRmKey){lastRmKey=key;
+if(st){
+        if(inRamadan){
+          st.textContent=T("ramadan")+" · "+T("rmToday",todayH.day,todayH.year);
+        }else if(start){
+        const dd=Math.round((start-Date.now())/86400000);
+        st.textContent=T("rmCountTitle")+": "+dd+" "+T("daysRemaining");
+      }else st.textContent=T("noTimes");
+    }
+    if(sub){
+      if(inRamadan)sub.textContent=T("rmSuhoor")+": "+(getDayData(todayStr())?suhoorTimeOf(todayStr()):"--")+" · "+T("rmIftar")+": "+(getDayData(todayStr())?getDayData(todayStr()).Maghrib:"--");
+      else sub.textContent=start?(start.toLocaleDateString(LOCALE[lang]||"ar-IQ",{weekday:"long",year:"numeric",month:"long",day:"numeric"})):"";
+    }
+    if(body&&wrap){
+      let rows="";
+      const nowd=new Date();
+      for(let i=0;i<35;i++){
+        const d=new Date(nowd.getTime()+i*86400000);
+        const h=hijriFromGregorian(d.getFullYear(),d.getMonth()+1,d.getDate());
+        if(h.month!==8)continue;
+        const dd=getDayData(dateStr(d));
+        if(!dd)continue;
+        const isT=i===0;
+        rows+='<tr'+(isT?' class="rm-now"':'')+'><td>'+d.getDate()+" "+((MONTH_NAMES[lang]||MONTH_NAMES.ar)[d.getMonth()])+'</td>'+
+          '<td>'+h.day+' رمضان</td><td class="ag-time">'+suhoorTimeOf(dateStr(d))+'</td><td class="ag-time">'+dd.Maghrib+'</td></tr>';
+      }
+      body.innerHTML=rows||"";
+      if(rows)wrap.classList.remove("hidden");else wrap.classList.add("hidden");
+    }
+    if(dua)dua.textContent=inRamadan?RM_DUAS[(todayH.day-1)%RM_DUAS.length]:RM_DUAS[0];
+  }
+}
+function suhoorTimeOf(ds){
+  const d=getDayData(ds);if(!d)return "--:--";
+  const[h,m]=d.Fajr.split(":").map(Number);
+  const t=new Date();t.setHours(h,m-10,0,0);
+  return pad(t.getHours())+":"+pad(t.getMinutes());
 }
 (function(){
   if(!window.DeviceOrientationEvent)return;
@@ -2757,15 +2981,19 @@ function updateLocText(){
   if(f)f.textContent="أوقات محسوبة ذاتياً داخل التطبيق لمدينة: "+LOC.city+" · "+LOC.country+" · حساب فلكي دقيق يعمل دون إنترنت";
 }
 /* ====== التحديث الذاتي من داخل التطبيق (نسخة Android) ====== */
+const DEFAULT_UPDATE_URL="https://valenciallc.github.io/prayer-app";
 function fillUpdateUI(){
   const st=$("updateStatus");
   const br=window.AndroidUpdater;
-  if(!br){if(st)st.textContent="الإصدار 11 — نسخة ويب/عادية: حدّث بنشر الملفات الجديدة على رابطك";return}
+  if(!br){if(st)st.textContent="الإصدار 12 — نسخة ويب/عادية: حدّث بنشر الملفات الجديدة على رابطك";return}
   let cfg={};
   try{cfg=JSON.parse(br.config()||"{}")}catch(e){}
-  const u=$("updateUrl");if(u)u.value=cfg.updateUrl||"";
+  const u=$("updateUrl");
+  if(u)u.value=cfg.updateUrl||DEFAULT_UPDATE_URL;
   if(st){
+    const eff=cfg.updateUrl||DEFAULT_UPDATE_URL;
     st.textContent="إصدار التطبيق المثبّت: "+(cfg.currentVersion??"—")
+      +((cfg.currentVersion&&cfg.bundledVersion&&cfg.currentVersion<cfg.bundledVersion)?" · (تطبيق مثبّت أقدم من المضمّن)":"")
       +((cfg.lastCheck&&cfg.lastCheck!=="")?" · آخر فحص: "+cfg.lastCheck:"")
       +(cfg.pending?" · نسخة جديدة محفوظة وتُحمَّل الآن":"");
   }
