@@ -76,9 +76,15 @@ h1{font-size:1.35rem;display:flex;align-items:center;gap:10px}
 .ay-text.show{opacity:1;transform:none}
 
 .azk-list{max-height:340px;overflow:auto;display:flex;flex-direction:column;gap:10px;padding:4px}
-.azk-menu{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:4px 0 12px}
-.azk-menu label{font-size:.9rem;font-weight:700;color:var(--text)}
-.azk-menu select{padding:8px 12px;border:1px solid var(--line);border-radius:10px;font-family:inherit;background:#FFF;color:var(--text);font-size:.95rem;min-width:190px}
+.azk-actions{display:flex;gap:8px;margin:2px 0 10px;flex-wrap:wrap}
+.azk-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:4px}
+.azk-card{background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:14px 12px;text-align:center;cursor:pointer;box-shadow:0 3px 10px rgba(120,90,50,.08);transition:transform .12s,box-shadow .12s}
+.azk-card:active{transform:scale(.96)}
+.azk-card .ak-ic{font-size:1.7rem;display:block;margin-bottom:6px}
+.azk-card .ak-t{font-weight:800;color:var(--text);font-size:.92rem}
+.azk-card .ak-n{display:inline-block;background:linear-gradient(135deg,#C89255,#B97F3F);color:#FFF8EC;border-radius:20px;padding:2px 10px;font-size:.72rem;margin-top:6px;font-weight:700}
+.azk-card.on{border-color:var(--gold);box-shadow:0 0 0 2px rgba(201,150,88,.35)}
+.azk-card.now{background:linear-gradient(135deg,#F6E7CC,#EED5AC)}
 .azk-item{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:14px 16px;box-shadow:0 3px 10px rgba(120,90,50,.08)}
 .azk-item .azk-text{font-family:"Amiri",serif;font-size:1.1rem;line-height:2;color:var(--text);letter-spacing:.2px}
 .azk-item .azk-count{display:inline-block;background:linear-gradient(135deg,#C89255,#B97F3F);color:#FFF8EC;border-radius:20px;padding:3px 12px;font-size:.78rem;margin-top:8px;font-weight:700}
@@ -205,6 +211,29 @@ tbody tr:hover{background:rgba(160,120,70,.06)}
   z-index:200;display:none;align-items:center;justify-content:center;padding:16px;
 }
 .settings-overlay.open{display:flex}
+/* ===== معالج تفعيل الصلاحيات ===== */
+.setup-overlay{
+  position:fixed;inset:0;background:rgba(60,45,25,.6);backdrop-filter:blur(3px);
+  z-index:300;display:none;align-items:center;justify-content:center;padding:16px;
+}
+.setup-overlay.open{display:flex}
+.setup-panel{
+  background:linear-gradient(150deg,#FFFDF8,#F6E7CC);border:1px solid var(--gold);
+  border-radius:18px;max-width:440px;width:100%;max-height:92vh;overflow:auto;
+  padding:22px;box-shadow:0 24px 70px rgba(60,45,25,.55);
+}
+.setup-panel h2{color:var(--gold);font-size:1.15rem;display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.setup-step{display:flex;gap:12px;align-items:flex-start;padding:14px 10px;border:1px solid var(--line);border-radius:14px;margin:12px 0;background:var(--card2)}
+.setup-step .st-ic{font-size:1.6rem}
+.setup-step .st-tit{font-weight:800;color:var(--text)}
+.setup-step .st-desc{font-size:.82rem;color:var(--dim);margin-top:2px}
+.setup-step .st-status{display:inline-block;border-radius:16px;padding:2px 10px;font-size:.75rem;font-weight:800;margin-top:6px}
+.st-ok{background:#E4F5E6;color:#1E7A34}
+.st-warn{background:#FDF1D7;color:#9A6A00}
+.st-bad{background:#FCE8E8;color:#C0392B}
+.dots{display:flex;gap:6px;justify-content:center;margin:10px 0 4px}
+.dots i{width:8px;height:8px;border-radius:50%;background:var(--line);display:block}
+.dots i.on{background:var(--gold);width:20px;border-radius:6px}
 .settings-panel{
   background:linear-gradient(150deg,#FFFDF8,#F3E8D5);border:1px solid var(--gold);
   border-radius:18px;max-width:860px;width:100%;max-height:90vh;overflow:auto;
@@ -660,11 +689,12 @@ tbody tr:hover{background:rgba(160,120,70,.06)}
 
       <section class="section">
         <h2 id="azkTitle">📿 أذكار الصباح</h2>
-        <div class="azk-menu">
-          <label id="azkMenuLabel">اختر تصنيفاً:</label>
-          <select id="azkCat"></select>
+        <div class="azk-actions hidden" id="azkActions">
+          <button class="btn sm ghost" id="azkBack">📚 كل التصنيفات</button>
+          <button class="btn sm ghost" id="azkAutoPick" title="العودة للتلقائي">🕐 تلقائي</button>
         </div>
-        <div class="azk-list" id="azkList"></div>
+        <div class="azk-list hidden" id="azkList"></div>
+        <div class="azk-grid" id="azkGrid"></div>
       </section>
     </div>
 
@@ -712,6 +742,20 @@ tbody tr:hover{background:rgba(160,120,70,.06)}
 </div>
 
 <div class="toast" id="toast"></div>
+
+<!-- ========================= معالج تفعيل الصلاحيات ========================= -->
+<div class="setup-overlay" id="setupOverlay">
+  <div class="setup-panel">
+    <h2 id="setupTitle">🛠️ تفعيل كل شيء في دقيقتين</h2>
+    <div class="dots" id="setupDots"></div>
+    <div id="setupBody"></div>
+    <div class="s-actions">
+      <button class="btn sm ghost" id="setupPrev" disabled>السابق</button>
+      <button class="btn sm" id="setupNext">التالي</button>
+      <button class="btn sm ghost" id="setupClose">لاحقاً؟</button>
+    </div>
+  </div>
+</div>
 
 <!-- ========================= لوحة الإعدادات ========================= -->
 <div class="settings-overlay" id="settingsOverlay">
@@ -768,7 +812,7 @@ tbody tr:hover{background:rgba(160,120,70,.06)}
         <button class="btn sm" id="updateUrlSave">💾 حفظ رابط التحديثات</button>
         <button class="btn sm ghost" id="updateCheckNow">🔍 فحص الآن</button>
       </div>
-      <span class="hint" id="updateStatus">الإصدار 10 — بدون رابط تحديث سيعمل التطبيق دائماً دون إنترنت</span>
+      <span class="hint" id="updateStatus">الإصدار 11 — بدون رابط تحديث سيعمل التطبيق دائماً دون إنترنت</span>
       <span class="hint">انشر ملفات التطبيق على GitHub Pages مجاناً (تعليمات في ملف README داخل مجلد المشروع) ثم ضع الرابط هنا، وسيتحدّث التطبيق تلقائياً</span>
     </div>
 
@@ -783,6 +827,7 @@ tbody tr:hover{background:rgba(160,120,70,.06)}
         <button class="btn sm ghost" id="notifTest">🧪 إشعار تجريبي</button>
         <button class="btn sm ghost" id="notifSync">🔄 مزامنة الجدول الآن</button>
       </div>
+      <button class="btn ghost" id="notifWizard" style="margin-top:6px">🛠️ دليل الإعداد الكامل (الإذونات كلها)</button>
       <span class="hint" id="notifStatus">اضغط على «طلب إذن الإشعارات» ثم «مزامنة الجدول» ليتنبّه لك التطبيق حتى لو كان مغلقاً</span>
       <span class="hint">⚠️ من إعدادات هاتفك: البطارية → التطبيقات → أوقات الصلاة والأذان → اختر «غير مقيّد» (أو «بدون قيود»)</span>
     </div>
@@ -1333,7 +1378,7 @@ ar:{
   tableLoading:"⏳ جارٍ جلب أوقات الشهر من الإنترنت...",tableFail:"تعذّر جلب الأوقات من الإنترنت — سيُعاد جلبها تلقائياً كل 30 ثانية",
   tableEmpty:"لا توجد أوقات لهذا الشهر — تأكد من الاتصال بالإنترنت أو انتظر الجلب التلقائي",
   tableDays:"{0} يوم — أوقات محسوبة تلقائياً لمدينة {1}، {2}",
-  duaTitle:"📿 دعاء ما بعد الأذان",duaDayTitle:"🤲 دعاء اليوم",azkAuto:"تلقائي (صباح/مساء)",azkMorning:"🌅 أذكار الصباح",azkEvening:"🌇 أذكار المساء",
+  duaTitle:"📿 دعاء ما بعد الأذان",duaDayTitle:"🤲 دعاء اليوم",azkAuto:"تلقائي (صباح/مساء)",azkItemWord:"ذِكر",azkMorning:"🌅 أذكار الصباح",azkEvening:"🌇 أذكار المساء",
   foot:"أوقات محسوبة تلقائياً لمدينة الشارقة · الإمارات · مع إمكانية التعديل اليدوي لجميع السنوات",
   btnPlayAdhan:"▶ تشغيل الأذان",btnClose:"إغلاق ✕",
   alertAdhan:"🕌 حان وقت الأذان: {0}",alertIqama:"⏰ حان وقت الإقامة: {0}",alertLead:"⏳ الإقامة {0} بعد {1} دقيقة ({2})",
@@ -1359,7 +1404,7 @@ en:{
   tableLoading:"⏳ Fetching month times from the internet...",tableFail:"Couldn't fetch times — will retry automatically every 30 seconds",
   tableEmpty:"No times for this month — check internet or wait for auto-refresh",
   tableDays:"{0} days — automatic times for {1}, {2}",
-  duaTitle:"📿 Dua after adhan",duaDayTitle:"🤲 Dua of the day",azkAuto:"Auto (morning/evening)",azkMorning:"🌅 Morning adhkar",azkEvening:"🌇 Evening adhkar",
+  duaTitle:"📿 Dua after adhan",duaDayTitle:"🤲 Dua of the day",azkAuto:"Auto (morning/evening)",azkItemWord:"item",azkMorning:"🌅 Morning adhkar",azkEvening:"🌇 Evening adhkar",
   foot:"Automatic prayer times for Sharjah · UAE · with manual editing for all years",
   btnPlayAdhan:"▶ Play adhan",btnClose:"Close ✕",
   alertAdhan:"🕌 Adhan time: {0}",alertIqama:"⏰ Iqama time: {0}",alertLead:"⏳ {0} iqama in {1} minutes ({2})",
@@ -1385,7 +1430,7 @@ ur:{
   tableLoading:"⏳ مہینے کے اوقات انٹرنیٹ سے لائے جا رہے ہیں...",tableFail:"اوقات حاصل نہیں ہوئے — ہر 30 سیکنڈ میں خودکار طور پر دوبارہ کوشش",
   tableEmpty:"اس مہینے کے کوئی اوقات نہیں — انٹرنیٹ چیک کریں یا خودکار تازہ کاری کا انتظار کریں",
   tableDays:"{0} دن — {1}، {2} کے خودکار اوقات",
-  duaTitle:"📿 اذان کے بعد کی دعا",duaDayTitle:"🤲 آج کی دعا",azkAuto:"خودکار (صبح/شام)",azkMorning:"🌅 صبح کے اذکار",azkEvening:"🌇 شام کے اذکار",
+  duaTitle:"📿 اذان کے بعد کی دعا",duaDayTitle:"🤲 آج کی دعا",azkAuto:"خودکار (صبح/شام)",azkItemWord:"ذکر",azkMorning:"🌅 صبح کے اذکار",azkEvening:"🌇 شام کے اذکار",
   foot:"شارجہ کے خودکار نماز کے اوقات · متحدہ عرب امارات · تمام سالوں کے لیے دستی ترمیم",
   btnPlayAdhan:"▶ اذان چلائیں",btnClose:"بند کریں ✕",
   alertAdhan:"🕌 اذان کا وقت: {0}",alertIqama:"⏰ اقامت کا وقت: {0}",alertLead:"⏳ {0} کی اقامت {1} منٹ بعد ({2})",
@@ -2042,36 +2087,71 @@ function pickAyah(){
 let azkWhich="";
 let azkLang="";
 let azkSelKey=(function(){try{return localStorage.getItem("prayerApp_v3_azkcat")||"auto";}catch(e){return "auto";}})();
-let azkFillLang="";
-function fillAzkCats(){
-  const el=$("azkCat");if(!el)return;
-  if(azkFillLang===lang&&el.options&&el.options.length===AZK_ORDER.length+1)return;
-  el.innerHTML='<option value="auto">'+T("azkAuto")+'</option>';
-  for(const k of AZK_ORDER)el.innerHTML+='<option value="'+k+'">'+AZK_TITLES[k][lang]+'</option>';
-  el.value=azkSelKey;
-  azkFillLang=lang;
-}
-document.addEventListener("change",function(ev){
-  if(ev.target&&ev.target.id==="azkCat"){
-    azkSelKey=ev.target.value;
-    try{localStorage.setItem("prayerApp_v3_azkcat",azkSelKey);}catch(e){}
-    renderAzkar(true);
+const AZK_ICON={auto:"🕐",morning:"🌅",evening:"🌇",afterPrayer:"🕌",sleep:"🌙",wake:"☀️",mosque:"🕋",food:"🍽️",travel:"🚗",rain:"🌧️",distress:"🙏",home:"🏠",sick:"🤒",anger:"😤"};
+function azkAutoKey(){const h=new Date().getHours();return (h>=4&&h<12)?"morning":"evening"}
+function pickAzkKey(){return azkSelKey&&azkSelKey!=="auto"?azkSelKey:azkAutoKey()}
+function azkCount(key){return (AZKAR[key]||[]).length}
+function renderAzkGrid(){
+  const g=$("azkGrid");if(!g)return;
+  const autoK=azkAutoKey();
+  let html='<div class="azk-card now'+(azkSelKey==="auto"?" on":"")+'" data-azk="auto">'
+    +'<span class="ak-ic">🕐</span><span class="ak-t">'+T("azkAuto")+'</span>'
+    +'<br><span class="ak-n">'+(autoK==="morning"?T("azkMorning"):T("azkEvening") )+'</span></div>';
+  for(const k of AZK_ORDER){
+    html+='<div class="azk-card'+(azkSelKey===k?" on":"")+'" data-azk="'+k+'">'
+      +'<span class="ak-ic">'+(AZK_ICON[k]||"📿")+'</span><span class="ak-t">'+AZK_TITLES[k][lang]+'</span>'
+      +'<br><span class="ak-n">'+azkCount(k)+' '+T("azkItemWord")+'</span></div>';
   }
-});
-function renderAzkar(force){
-  fillAzkCats();
-  const isMhour=(new Date().getHours()>=4)&&(new Date().getHours()<12);
-  let key=azkSelKey&&azkSelKey!=="auto"?azkSelKey:(isMhour?"morning":"evening");
-  if(!force&&azkWhich===key&&azkLang===lang)return;
-  azkWhich=key;azkLang=lang;
-  $("azkTitle").textContent=(key==="morning"||key==="evening")?T(key==="morning"?"azkMorning":"azkEvening"):(AZK_TITLES[key][lang]||key);
+  g.innerHTML=html;
+}
+function renderAzkList(){
+  const key=pickAzkKey();
+  const list=$("azkList"),grid=$("azkGrid"),actions=$("azkActions"),autoB=$("azkAutoPick"),title=$("azkTitle");
+  if(azkSelKey!=="auto"){
+    list.classList.remove("hidden");grid.classList.add("hidden");if(actions)actions.classList.remove("hidden");if(autoB)autoB.classList.remove("hidden");
+  }else{
+    list.classList.remove("hidden");grid.classList.remove("hidden");if(actions)actions.classList.add("hidden");
+  }
+  if(key!==azkWhich||lang!==azkLang){
+    azkWhich=key;azkLang=lang;
+  }
+  title.textContent=(key==="morning"||key==="evening")?T(key==="morning"?"azkMorning":"azkEvening"):(AZK_TITLES[key][lang]||key);
   let html="";
   const counts=AZKAR_COUNT[lang]||AZKAR_COUNT.ar;
   for(const z of AZKAR[key]||[]){
     html+='<div class="azk-item"><div class="azk-text">'+z.t+'</div><div class="azk-count">'+(counts[z.n]||z.n)+'</div></div>';
   }
-  $("azkList").innerHTML=html;
+  list.innerHTML=html;
 }
+function renderAzkar(){
+  renderAzkGrid();
+  renderAzkList();
+}
+document.addEventListener("click",function(ev){
+  let t=ev.target;
+  while(t&&t!==document){
+    if(t.getAttribute&&t.getAttribute("data-azk")){
+      azkSelKey=t.getAttribute("data-azk");
+      try{localStorage.setItem("prayerApp_v3_azkcat",azkSelKey);}catch(e){}
+      renderAzkar();
+      renderDuaDay();
+      return;
+    }
+    if(t.id==="azkBack"){
+      azkSelKey="auto";
+      try{localStorage.setItem("prayerApp_v3_azkcat","auto");}catch(e){}
+      renderAzkar();
+      return;
+    }
+    if(t.id==="azkAutoPick"){
+      azkSelKey="auto";
+      try{localStorage.setItem("prayerApp_v3_azkcat","auto");}catch(e){}
+      renderAzkar();
+      return;
+    }
+    t=t.parentNode;
+  }
+});
 function renderDuaDay(){
   const el=$("duaDay");if(!el)return;
   const now=new Date();
@@ -2454,7 +2534,7 @@ function updateLocText(){
 function fillUpdateUI(){
   const st=$("updateStatus");
   const br=window.AndroidUpdater;
-  if(!br){if(st)st.textContent="الإصدار 10 — نسخة ويب/عادية: حدّث بنشر الملفات الجديدة على رابطك";return}
+  if(!br){if(st)st.textContent="الإصدار 11 — نسخة ويب/عادية: حدّث بنشر الملفات الجديدة على رابطك";return}
   let cfg={};
   try{cfg=JSON.parse(br.config()||"{}")}catch(e){}
   const u=$("updateUrl");if(u)u.value=cfg.updateUrl||"";
@@ -2558,6 +2638,70 @@ function _bindNotif(){
   if(s)s.addEventListener("click",syncNotif);
   if(p)p.addEventListener("click",requestNotifPerm);
   if(t)t.addEventListener("click",testNotif);
+  const w=$("notifWizard");if(w)w.addEventListener("click",openSetup);
+}
+/* ====== معالج تفعيل الصلاحيات خطوة بخطوة ====== */
+const SETUP_STEPS=[
+  {icon:"🔔",title:"إذن الإشعارات",desc:"ليصل إليك الأذان والإقامة حتى والتطبيق مغلق على الهاتف",btn:"طلب الإذن الآن",act:"notif"},
+  {icon:"🔋",title:"السماح بتشغيل الخلفية",desc:"أهم خطوة ليبقى التطبيق حياً ولا تقتله إدارة البطارية",btn:"فتح إعداد البطارية",act:"battery"},
+  {icon:"⏱️",title:"التنبيهات في وقتها تماماً",desc:"يفعّل نظام الهاتف التنبيهات الدقيقة دون تأخير",btn:"تأكيد التنبيهات الدقيقة",act:"exact"},
+  {icon:"🔊",title:"صوت الأذان الكامل",desc:"سيُشغَّل الأذان بنغمة كاملة مباشرة من الهاتف",btn:"فعّل كل شيء وأكمل",act:"done"}
+];
+let setupStep=0;
+function extPermStatus(){
+  const br=window.AndroidUpdater;
+  if(!br)return {n:"na",e:"na",b:"na"};
+  try{
+    const s=JSON.parse(br.permStatus()||"{}");
+    return {n:s.notification||"na",e:s.exact?"ok":"warn",b:s.battery?"ok":"warn"};
+  }catch(e){return {n:"na",e:"na",b:"na"}}
+}
+function stepStatus(act){
+  const st=extPermStatus();
+  if(act==="notif")return st.n==="granted"?{txt:"ممنوح ✓",cls:"st-ok"}:st.n==="na"?{txt:"نسخة ويب — الميزة في نسخة Android",cls:"st-bad"}:{txt:"غير ممنوح — اضغط الزر",cls:"st-warn"};
+  if(act==="battery")return st.b==="ok"?{txt:"بدون قيود ✓",cls:"st-ok"}:st.b==="na"?{txt:"غير معروف",cls:"st-bad"}:{txt:"مقيّد — اغلبه من الزر",cls:"st-warn"};
+  if(act==="exact")return st.e==="ok"?{txt:"مفعّلة ✓",cls:"st-ok"}:st.e==="na"?{txt:"غير معروف",cls:"st-bad"}:{txt:"يفضّل تفعيلها",cls:"st-warn"};
+  return {txt:"جاهز",cls:"st-ok"};
+}
+function renderSetup(){
+  const st=SETUP_STEPS[setupStep];const body=$("setupBody");
+  if(!body)return;
+  const s=stepStatus(st.act);
+  body.innerHTML='<div class="setup-step"><div class="st-ic">'+st.icon+'</div><div><div class="st-tit">'+st.title+'</div><div class="st-desc">'+st.desc+'</div><span class="st-status '+s.cls+'">'+s.txt+'</span><div style="margin-top:10px"><button class="btn sm" id="setupAct">'+st.btn+'</button></div></div></div>';
+  const dots=$("setupDots");if(dots){dots.innerHTML="";for(let i=0;i<SETUP_STEPS.length;i++)dots.innerHTML+='<i class="'+(i===setupStep?"on":"")+'"></i>'}
+  const nx=$("setupNext"),pv=$("setupPrev");
+  if(nx)nx.textContent=(setupStep===SETUP_STEPS.length-1)?"🏁 إنهاء":"التالي";
+  if(pv)pv.disabled=setupStep===0;
+  const act=$("setupAct");
+  if(act)act.onclick=function(){
+    if(!window.AndroidUpdater){toast("الميزة في نسخة Android المتاحة على الهاتف","err");return}
+    if(st.act==="notif"){window.AndroidUpdater.requestNotifyPermission();toast("وافق على نافذة الإذن إذا ظهرت");}
+    else if(st.act==="battery"){window.AndroidUpdater.openBatterySettings();toast("اختر «غير مقيّد / No restrictions» ثم ارجع");}
+    else if(st.act==="exact"){window.AndroidUpdater.openExactAlarmSettings();toast("فعّل «Allow alarm & reminders» إن تطلب");}
+    else if(st.act==="done"){finishSetup();return}
+    setTimeout(function(){renderSetup()},1100);
+  };
+}
+function openSetup(){setupStep=0;const o=$("setupOverlay");if(o)o.classList.add("open");renderSetup()}
+function closeSetup(){const o=$("setupOverlay");if(o)o.classList.remove("open")}
+function navSetup(d){
+  setupStep=Math.max(0,Math.min(SETUP_STEPS.length-1,setupStep+d));
+  renderSetup();
+}
+function finishSetup(){
+  NOTIF_SETTINGS.master=true;NOTIF_SETTINGS.adhan=true;
+  try{localStorage.setItem("prayerApp_v3_notif",JSON.stringify(NOTIF_SETTINGS))}catch(e){}
+  try{localStorage.setItem("prayerApp_v3_setupDone","1")}catch(e){}
+  fillNotifUI();
+  pushSchedule();
+  closeSetup();
+  toast("✔ تم تفعيل كل شيء — ستأتيك التنبيهات في وقتها");
+}
+function _bindSetup(){
+  const nx=$("setupNext"),pv=$("setupPrev"),cl=$("setupClose");
+  if(nx)nx.addEventListener("click",function(){navSetup(1)});
+  if(pv)pv.addEventListener("click",function(){navSetup(-1)});
+  if(cl)cl.addEventListener("click",closeSetup);
 }
 function openSettings(){
   $("settingsOverlay").classList.add("open");
@@ -2827,6 +2971,7 @@ applyLang();
 updateLocText();
 fillUpdateUI();
 _bindNotif();
+_bindSetup();
 fillNotifUI();
 const _n=new Date();
 viewYM={y:_n.getFullYear(),m:_n.getMonth()};
@@ -2849,6 +2994,10 @@ renderQuran();
 renderDhikr();
 setInterval(render,1000);
 setInterval(renderAzkar,60000);
+const _sd=(function(){try{return localStorage.getItem("prayerApp_v3_setupDone")}catch(e){return "1"}})();
+if(window.AndroidUpdater&&_sd==null){
+  setTimeout(openSetup,1500);
+}
 if(isIOS&&!audioUnlocked)$("iosHint").classList.remove("hidden");
 if("serviceWorker" in navigator){
   window.addEventListener("load",()=>{
