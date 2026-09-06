@@ -76,6 +76,9 @@ h1{font-size:1.35rem;display:flex;align-items:center;gap:10px}
 .ay-text.show{opacity:1;transform:none}
 
 .azk-list{max-height:340px;overflow:auto;display:flex;flex-direction:column;gap:10px;padding:4px}
+.azk-menu{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:4px 0 12px}
+.azk-menu label{font-size:.9rem;font-weight:700;color:var(--text)}
+.azk-menu select{padding:8px 12px;border:1px solid var(--line);border-radius:10px;font-family:inherit;background:#FFF;color:var(--text);font-size:.95rem;min-width:190px}
 .azk-item{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:14px 16px;box-shadow:0 3px 10px rgba(120,90,50,.08)}
 .azk-item .azk-text{font-family:"Amiri",serif;font-size:1.1rem;line-height:2;color:var(--text);letter-spacing:.2px}
 .azk-item .azk-count{display:inline-block;background:linear-gradient(135deg,#C89255,#B97F3F);color:#FFF8EC;border-radius:20px;padding:3px 12px;font-size:.78rem;margin-top:8px;font-weight:700}
@@ -651,7 +654,16 @@ tbody tr:hover{background:rgba(160,120,70,.06)}
       </section>
 
       <section class="section">
+        <h2 data-i18n="duaDayTitle">🤲 دعاء اليوم</h2>
+        <div class="dua-card" id="duaDay"></div>
+      </section>
+
+      <section class="section">
         <h2 id="azkTitle">📿 أذكار الصباح</h2>
+        <div class="azk-menu">
+          <label id="azkMenuLabel">اختر تصنيفاً:</label>
+          <select id="azkCat"></select>
+        </div>
         <div class="azk-list" id="azkList"></div>
       </section>
     </div>
@@ -756,8 +768,23 @@ tbody tr:hover{background:rgba(160,120,70,.06)}
         <button class="btn sm" id="updateUrlSave">💾 حفظ رابط التحديثات</button>
         <button class="btn sm ghost" id="updateCheckNow">🔍 فحص الآن</button>
       </div>
-      <span class="hint" id="updateStatus">الإصدار 9 — بدون رابط تحديث سيعمل التطبيق دائماً دون إنترنت</span>
+      <span class="hint" id="updateStatus">الإصدار 10 — بدون رابط تحديث سيعمل التطبيق دائماً دون إنترنت</span>
       <span class="hint">انشر ملفات التطبيق على GitHub Pages مجاناً (تعليمات في ملف README داخل مجلد المشروع) ثم ضع الرابط هنا، وسيتحدّث التطبيق تلقائياً</span>
+    </div>
+
+    <div class="s-group">
+      <h3>🔔 إشعارات الهاتف <small>أذان كامل + تنبيه الإقامة — يعمل دون إنترنت</small></h3>
+      <label class="s-check"><input type="checkbox" id="notifMaster"> تفعيل الإشعارات في الهاتف</label>
+      <label class="s-check"><input type="checkbox" id="notifAdhan"> تشغيل صوت الأذان كاملاً على الهاتف</label>
+      <label class="s-check"><input type="checkbox" id="notifIqama"> إشعار الإقامة (اصطفّت الصلاة)</label>
+      <label class="s-check"><input type="checkbox" id="notifLead"> تنبيه قبل الإقامة بـ <b id="notifLeadMin">7</b> دقائق</label>
+      <div class="s-actions" style="justify-content:flex-start">
+        <button class="btn sm" id="notifPerm">🔔 طلب إذن الإشعارات</button>
+        <button class="btn sm ghost" id="notifTest">🧪 إشعار تجريبي</button>
+        <button class="btn sm ghost" id="notifSync">🔄 مزامنة الجدول الآن</button>
+      </div>
+      <span class="hint" id="notifStatus">اضغط على «طلب إذن الإشعارات» ثم «مزامنة الجدول» ليتنبّه لك التطبيق حتى لو كان مغلقاً</span>
+      <span class="hint">⚠️ من إعدادات هاتفك: البطارية → التطبيقات → أوقات الصلاة والأذان → اختر «غير مقيّد» (أو «بدون قيود»)</span>
     </div>
 
     <div class="s-group">
@@ -889,7 +916,18 @@ let REMINDER_MESSAGES = [
   "اللهم صل وسلم على نبينا محمد",
   "رضيت بالله رباً وبالإسلام ديناً وبمحمد نبياً",
   "اللهم إني أسألك الهدى والتقى والعفاف والغنى",
-  "يا حي يا قيوم برحمتك أستغيث"
+  "يا حي يا قيوم برحمتك أستغيث",
+  "ألف الصلاة على سيدنا محمد ﷺ",
+  "اللهم أعني على ذكرك وشكرك وحسن عبادتك",
+  "اللهم انفعنا بما علمتنا وعلمنا ما ينفعنا",
+  "حسبنا الله ونعم الوكيل",
+  "اللهم ثبت قلبي على دينك",
+  "اللهم اجعل خير أعمالنا خواتيمها",
+  "اللهم إنا نسألك الجنة وما قرب إليها من قول أو عمل",
+  "سبحان الله وبحمده عدد خلقه ورضا نفسه وزنة عرشه ومداد كلماته",
+  "لا إله إلا الله وحده لا شريك له له الملك وله الحمد وهو على كل شيء قدير",
+  "اللهم اغفر لي ذنبي كله دقه وجله وأوله وآخره وعلانيته وسره",
+  "اللهم صل على محمد وعلى آل محمد كما صليت على إبراهيم وعلى آل إبراهيم إنك حميد مجيد"
 ];
 let reminderAudio = null;
 
@@ -930,7 +968,35 @@ const HADITHS=[
  {t:"قال رسول الله ﷺ: «سَبْعَةٌ يُظِلُّهُمُ اللهُ فِي ظِلِّهِ يَوْمَ لَا ظِلَّ إِلَّا ظِلُّهُ... وَشَابٌّ نَشَأَ فِي عِبَادَةِ رَبِّهِ»",r:"متفق عليه"},
  {t:"قال رسول الله ﷺ: «لَا حَسَدَ إِلَّا فِي اثْنَتَيْنِ: رَجُلٍ آتَاهُ اللهُ الْقُرْآنَ يَقُومُ بِهِ آنَاءَ اللَّيْلِ وَالنَّهَارِ»",r:"متفق عليه"},
  {t:"قال رسول الله ﷺ: «مَنْ قَرَأَ سُورَةَ الْكَهْفِ فِي يَوْمِ الْجُمُعَةِ أَضَاءَ لَهُ مِنَ النُّورِ مَا بَيْنَ الْجُمُعَتَيْنِ»",r:"حسّنه الألباني"},
- {t:"قال رسول الله ﷺ: «إِنَّ اللهَ كَتَبَ الْإِحْسَانَ عَلَى كُلِّ شَيْءٍ»",r:"رواه مسلم"}
+ {t:"قال رسول الله ﷺ: «إِنَّ اللهَ كَتَبَ الْإِحْسَانَ عَلَى كُلِّ شَيْءٍ»",r:"رواه مسلم"},
+  {t:"قال رسول الله ﷺ: «أَقْرَبُ مَا يَكُونُ الْعَبْدُ مِنْ رَبِّهِ وَهُوَ سَاجِدٌ، فَأَكْثِرُوا الدُّعَاءَ»",r:"رواه مسلم"},
+  {t:"قال رسول الله ﷺ: «الدُّعَاءُ هُوَ الْعِبَادَةُ»",r:"رواه الترمذي"},
+  {t:"قال رسول الله ﷺ: «مَنْ دَلَّ عَلَى خَيْرٍ فَلَهُ مِثْلُ أَجْرِ فَاعِلِهِ»",r:"رواه مسلم"},
+  {t:"قال رسول الله ﷺ: «وَاللهُ فِي عَوْنِ الْعَبْدِ مَا كَانَ الْعَبْدُ فِي عَوْنِ أَخِيهِ»",r:"رواه مسلم"},
+  {t:"قال رسول الله ﷺ: «مَنْ تَوَضَّأَ فَأَحْسَنَ الْوُضُوءَ خَرَجَتْ خَطَايَاهُ مِنْ جَسَدِهِ»",r:"رواه مسلم"},
+  {t:"قال رسول الله ﷺ: «الصَّلَاةُ نُورٌ، وَالصَّدَقَةُ بُرْهَانٌ، وَالصَّبْرُ ضِيَاءٌ»",r:"رواه مسلم"},
+  {t:"قال رسول الله ﷺ: «لَوْ تَعْلَمُونَ مَا عِنْدَ اللهِ مِنَ الْجَزَاءِ لَأَحْبَبْتُمْ أَنْ تَزِيدُوا فِي صَلَاتِكُمْ»",r:"رواه الطبراني"},
+  {t:"قال رسول الله ﷺ: «إِذَا مَرَرْتُمْ بِرِيَاضِ الْجَنَّةِ فَارْتَعُوا» قيل ما رياض الجنة؟ قال «حِلَقُ الذِّكْرِ»",r:"رواه الترمذي"},
+  {t:"قال رسول الله ﷺ: «مَا مِنَ الْأَعْمَالِ شَيْءٌ أَحَبُّ إِلَى اللهِ مِنَ الصَّلَاةِ فِي وَقْتِهَا»",r:"متفق عليه"},
+  {t:"قال رسول الله ﷺ: «أَحَبُّ الْبِلَادِ إِلَى اللهِ مَسَاجِدُهَا»",r:"متفق عليه"},
+  {t:"قال رسول الله ﷺ: «الصِّيَامُ جُنَّةٌ»",r:"متفق عليه"},
+  {t:"قال رسول الله ﷺ: «مَنْ صَامَ رَمَضَانَ إِيمَانًا وَاحْتِسَابًا غُفِرَ لَهُ مَا تَقَدَّمَ مِنْ ذَنْبِهِ»",r:"متفق عليه"},
+  {t:"قال رسول الله ﷺ: «أَكْثِرُوا مِنَ الصَّلَاةِ عَلَيَّ يَوْمَ الْجُمُعَةِ وَفِي لَيْلَةِ الْجُمُعَةِ»",r:"رواه البيهقي"},
+  {t:"قال رسول الله ﷺ: «مَنْ قَامَ لَيْلَةَ الْقَدْرِ إِيمَانًا وَاحْتِسَابًا غُفِرَ لَهُ مَا تَقَدَّمَ مِنْ ذَنْبِهِ»",r:"متفق عليه"},
+  {t:"قال رسول الله ﷺ: «إِذَا جَاءَ رَمَضَانُ فُتِّحَتْ أَبْوَابُ الْجَنَّةِ وَغُلِّقَتْ أَبْوَابُ النَّارِ وَصُفِّدَتِ الشَّيَاطِينُ»",r:"متفق عليه"},
+  {t:"قال رسول الله ﷺ: «مَنْ نَفَّسَ عَنْ مُؤْمِنٍ كُرْبَةً مِنْ كُرَبِ الدُّنْيَا نَفَّسَ اللهُ عَنْهُ كُرْبَةً مِنْ كُرَبِ يَوْمِ الْقِيَامَةِ»",r:"رواه مسلم"},
+  {t:"قال رسول الله ﷺ: «لَنْ يُدْخِلَ أَحَدًا عَمَلُهُ الْجَنَّةَ» قالوا ولا أنت؟ قال «وَلَا أَنَا إِلَّا أَنْ يَتَغَمَّدَنِي اللهُ بِفَضْلٍ وَرَحْمَةٍ»",r:"متفق عليه"},
+  {t:"قال رسول الله ﷺ: «اتَّقُوا الظُّلْمَ فَإِنَّ الظُّلْمَ ظُلُمَاتٌ يَوْمَ الْقِيَامَةِ»",r:"رواه مسلم"},
+  {t:"قال رسول الله ﷺ: «لَا يَزَالُ جِسْمُ الْمُؤْمِنِ مُؤْلِمًا مَا عَافَاهُ اللهُ حَتَّى يُكَفِّرَ عَنْهُ شَيْئًا مِنْ خَطَايَاهُ»",r:"رواه الترمذي"},
+  {t:"قال رسول الله ﷺ: «مَا نَقَصَتْ صَدَقَةٌ مِنْ مَالٍ، وَمَا زَادَ اللهُ عَبْدًا بِعَفْوٍ إِلَّا عِزًّا»",r:"رواه مسلم"},
+  {t:"قال رسول الله ﷺ: «أَحَبُّ الدِّينِ إِلَى اللهِ الْحَنِيفِيَّةُ السَّمْحَةُ»",r:"رواه البخاري"},
+  {t:"قال رسول الله ﷺ: «لَذِكْرُ اللهِ أَفْضَلُ مِنَ الصَّدَقَةِ بِالْمَالِ»",r:"رواه البيهقي"},
+  {t:"قال رسول الله ﷺ: «اللَّهُمَّ أَعِنِّي عَلَى ذِكْرِكَ وَشُكْرِكَ وَحُسْنِ عِبَادَتِكَ»",r:"رواه أبو داود"},
+  {t:"قال رسول الله ﷺ: «لَا تَزُولُ قَدَمَا عَبْدٍ يَوْمَ الْقِيَامَةِ حَتَّى يُسْأَلَ عَنْ عُمُرِهِ فِيمَ أَفْنَاهُ»",r:"رواه الترمذي"},
+  {t:"قال رسول الله ﷺ: «مَنْ صَلَّى الصُّبْحَ فَهُوَ فِي ذِمَّةِ اللهِ»",r:"رواه مسلم"},
+  {t:"قال رسول الله ﷺ: «الصَّلَوَاتُ الْخَمْسُ وَالْجُمْعَةُ إِلَى الْجُمْعَةِ وَرَمَضَانُ إِلَى رَمَضَانَ مُكَفِّرَاتٌ لِمَا بَيْنَهُنَّ إِذَا اجْتَنَبَ الْكَبَائِرَ»",r:"رواه مسلم"},
+  {t:"قال رسول الله ﷺ: «مَنْ حَلَقَهُ النَّاسُ فَقَالَ رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً...» متمماً دعاء القنوت",r:"في سنن أبي داود"},
+  {t:"قال رسول الله ﷺ: «رَغِمَ أَنْفُ رَجُلٍ ذُكِرْتُ عِنْدَهُ فَلَمْ يُصَلِّ عَلَيَّ»",r:"رواه الترمذي"}
 ];
 const AZKAR={
   morning:[
@@ -955,7 +1021,81 @@ const AZKAR={
    {t:"قُلْ هُوَ اللَّهُ أَحَدٌ، وَقُلْ أَعُوذُ بِرَبِّ الْفَلَقِ، وَقُلْ أَعُوذُ بِرَبِّ النَّاسِ",n:"3 مرات"},
    {t:"اللَّهُمَّ عَافِنِي فِي بَدَنِي، اللَّهُمَّ عَافِنِي فِي سَمْعِي، اللَّهُمَّ عَافِنِي فِي بَصَرِي",n:"3 مرات"},
    {t:"بِسْمِ اللهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ",n:"3 مرات"},
-   {t:"رَضِيتُ بِاللهِ رَبًّا، وَبِالْإِسْلَامِ دِينًا، وَبِمُحَمَّدٍ ﷺ نَبِيًّا",n:"3 مرات"}
+{t:"رَضِيتُ بِاللهِ رَبًّا، وَبِالْإِسْلَامِ دِينًا، وَبِمُحَمَّدٍ ﷺ نَبِيًّا",n:"3 مرات"}
+  ],
+  afterPrayer:[
+   {t:"اللَّهُ لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ... (آية الكرسي كاملة)",n:"مرة واحدة"},
+   {t:"قل هو الله أحد — وقل أعوذ برب الفلق — وقل أعوذ برب الناس",n:"3 مرات"},
+   {t:"سُبْحَانَ اللهِ",n:"33 مرة"},
+   {t:"الْحَمْدُ لِلَّهِ",n:"33 مرة"},
+   {t:"اللهُ أَكْبَرُ",n:"33 مرة"},
+   {t:"لَا إِلَهَ إِلَّا اللهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ، وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",n:"مرة واحدة"},
+   {t:"اللَّهُمَّ أَعِنِّي عَلَى ذِكْرِكَ وَشُكْرِكَ وَحُسْنِ عِبَادَتِكَ",n:"مرة واحدة"},
+   {t:"اللَّهُمَّ اغْفِرْ لِي مَا قَدَّمْتُ وَمَا أَخَّرْتُ، وَأَسْرَرْتُ وَأَعْلَنْتُ",n:"مرة واحدة"}
+  ],
+  sleep:[
+   {t:"بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا",n:"مرة واحدة"},
+   {t:"اللَّهُمَّ أَسْلَمْتُ نَفْسِي إِلَيْكَ، وَوَجَّهْتُ وَجْهِي إِلَيْكَ، وَفَوَّضْتُ أَمْرِي إِلَيْكَ، وَأَلْجَأْتُ ظَهْرِي إِلَيْكَ",n:"مرة واحدة"},
+   {t:"سُبْحَانَ اللهِ (وَبِحَمْدِهِ)",n:"33 مرة"},
+   {t:"اللَّهُمَّ رَبَّ السَّمَاوَاتِ وَرَبَّ الْأَرْضِ وَرَبَّ الْعَرْشِ الْعَظِيمِ، رَبَّنَا وَرَبَّ كُلِّ شَيْءٍ...",n:"مرة واحدة"},
+   {t:"آيَةُ الْكُرْسِيِّ",n:"مرة واحدة"},
+   {t:"قُلْ هُوَ اللَّهُ أَحَدٌ، وَقُلْ أَعُوذُ بِرَبِّ الْفَلَقِ، وَقُلْ أَعُوذُ بِرَبِّ النَّاسِ — ثم يمسح على جسده",n:"3 مرات"},
+   {t:"بِاسْمِكَ رَبِّي وَضَعْتُ جَنْبِي، وَبِكَ أَرْفَعُهُ، فَإِنْ أَمْسَكْتَ نَفْسِي فَارْحَمْهَا",n:"مرة واحدة"},
+   {t:"اللَّهُمَّ قِنِي عَذَابَكَ يَوْمَ تَبْعَثُ عِبَادَكَ",n:"3 مرات"},
+   {t:"لَا إِلَهَ إِلَّا اللهُ الْوَاحِدُ الْقَهَّارُ، رَبُّ السَّمَاوَاتِ وَالْأَرْضِ وَمَا بَيْنَهُمَا، الْعَزِيزُ الْغَفَّارُ",n:"7 مرات"}
+  ],
+  wake:[
+   {t:"الْحَمْدُ لِلَّهِ الَّذِي أَحْيَانَا بَعْدَ مَا أَمَاتَنَا وَإِلَيْهِ النُّشُورُ",n:"مرة واحدة"},
+   {t:"لَا إِلَهَ إِلَّا اللهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ، وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",n:"مرة واحدة"},
+   {t:"سُبْحَانَ اللهِ وَالْحَمْدُ لِلَّهِ وَلَا إِلَهَ إِلَّا اللهُ وَاللهُ أَكْبَرُ",n:"مرة واحدة"},
+   {t:"اللَّهُمَّ عَافِنِي فِي بَدَنِي، اللَّهُمَّ عَافِنِي فِي سَمْعِي، اللَّهُمَّ عَافِنِي فِي بَصَرِي",n:"3 مرات"}
+  ],
+  mosque:[
+   {t:"عند دخول المسجد: أَعُوذُ بِاللهِ الْعَظِيمِ، وَبِوَجْهِهِ الْكَرِيمِ، وَسُلْطَانِهِ الْقَدِيمِ مِنَ الشَّيْطَانِ الرَّجِيمِ — ثم: اللَّهُمَّ افْتَحْ لِي أَبْوَابَ رَحْمَتِكَ",n:"مرة واحدة"},
+   {t:"عند الخروج من المسجد: اللَّهُمَّ إِنِّي أَسْأَلُكَ مِنْ فَضْلِكَ",n:"مرة واحدة"},
+   {t:"بِسْمِ اللهِ وَالصَّلَاةُ وَالسَّلَامُ عَلَى رَسُولِ اللهِ — صلاة التسليم عند دخوله ﷺ",n:"مرة واحدة"}
+  ],
+  food:[
+   {t:"قبل الطعام: بِسْمِ اللهِ — فإن نسي أوله فليقل: بِسْمِ اللهِ أَوَّلَهُ وَآخِرَهُ",n:"مرة واحدة"},
+   {t:"بعد الطعام: الْحَمْدُ لِلَّهِ الَّذِي أَطْعَمَنِي هَذَا وَرَزَقَنِيهِ مِنْ غَيْرِ حَوْلٍ مِنِّي وَلَا قُوَّةٍ",n:"مرة واحدة"},
+   {t:"الْحَمْدُ لِلَّهِ الَّذِي أَطْعَمَنَا وَسَقَانَا وَجَعَلَنَا مُسْلِمِينَ",n:"مرة واحدة"},
+   {t:"عند الفراغ من الطعام: اللَّهُمَّ بَارِكْ لَهُمْ فِيمَا رَزَقْتَهُمْ وَاغْفِرْ لَهُمْ وَارْحَمْهُمْ (دعاء من أطعم غيره)",n:"مرة واحدة"}
+  ],
+  travel:[
+   {t:"اللهُ أَكْبَرُ، اللهُ أَكْبَرُ، اللهُ أَكْبَرُ، سُبْحَانَ الَّذِي سَخَّرَ لَنَا هَذَا وَمَا كُنَّا لَهُ مُقْرِنِينَ، وَإِنَّا إِلَىٰ رَبِّنَا لَمُنْقَلِبُونَ",n:"مرة واحدة"},
+   {t:"اللَّهُمَّ إِنَّا نَسْأَلُكَ فِي سَفَرِنَا هَذَا الْبِرَّ وَالتَّقْوَى, وَمِنَ الْعَمَلِ مَا تَرْضَى، اللَّهُمَّ هَوِّنْ عَلَيْنَا سَفَرَنَا هَذَا وَاطْوِ عَنَّا بُعْدَهُ",n:"مرة واحدة"},
+   {t:"اللَّهُمَّ أَنْتَ الصَّاحِبُ فِي السَّفَرِ وَالْخَلِيفَةُ فِي الْأَهْلِ",n:"مرة واحدة"},
+   {t:"عند الرجوع من السفر: آيِبُونَ تَائِبُونَ عَابِدُونَ لِرَبِّنَا حَامِدُونَ",n:"مرة واحدة"}
+  ],
+  rain:[
+   {t:"اللَّهُمَّ صَيِّبًا نَافِعًا (عند نزول المطر)",n:"3 مرات"},
+   {t:"مُطِرْنَا بِفَضْلِ اللهِ وَرَحْمَتِهِ (إذا قيل: مُطرنا)",n:"مرة واحدة"},
+   {t:"اللَّهُمَّ حَوَالَيْنَا وَلَا عَلَيْنَا، مطر على القرى والجباب والآكام — عند الخوف من ضرر المطر",n:"مرة واحدة"},
+   {t:"سُبْحَانَ الَّذِي يُسَبِّحُ الرَّعْدُ بِحَمْدِهِ وَالْمَلَائِكَةُ مِنْ خِيفَتِهِ (عند سماع الرعد)",n:"مرة واحدة"},
+   {t:"اللَّهُمَّ حَوَالَيْنَا وَلَا عَلَيْنَا, اللَّهُمَّ عَلَى الْآكَامِ وَالْجِبَالِ وَالشَّجَرِ",n:"مرة واحدة"}
+  ],
+  distress:[
+   {t:"لَا إِلَهَ إِلَّا أَنْتَ سُبْحَانَكَ إِنِّي كُنْتُ مِنَ الظَّالِمِينَ",n:"مرة واحدة"},
+   {t:"حَسْبُنَا اللهُ وَنِعْمَ الْوَكِيلُ",n:"7 مرات"},
+   {t:"اللَّهُمَّ رَحْمَتَكَ أَرْجُو فَلَا تَكِلْنِي إِلَى نَفْسِي طَرْفَةَ عَيْنٍ, وَأَصْلِحْ لِي شَأْنِي كُلَّهُ",n:"مرة واحدة"},
+   {t:"يَا حَيُّ يَا قَيُّومُ بِرَحْمَتِكَ أَسْتَغِيثُ",n:"مرة واحدة"},
+   {t:"اللَّهُمَّ لَا سَهْلَ إِلَّا مَا جَعَلْتَهُ سَهْلًا، وَأَنْتَ تَجْعَلُ الْحَزْنَ إِذَا شِئْتَ سَهْلًا",n:"مرة واحدة"}
+  ],
+  home:[
+   {t:"عند دخول المنزل: بِسْمِ اللهِ وَلَجْنَا، وَبِسْمِ اللهِ خَرَجْنَا، وَعَلَى اللهِ رَبِّنَا تَوَكَّلْنَا",n:"مرة واحدة"},
+   {t:"بسم الله ولجنا، وبسم الله خرجنا",n:"مرة واحدة"},
+   {t:"عند خروج مؤذن بيتكم: سَلَامٌ عَلَيْكُمْ (الرد على أهل البيت)",n:"مرة واحدة"}
+  ],
+  sick:[
+   {t:"بِسْمِ اللهِ — يمسح مكان الألم: ذَهَبَ الْبَأْسُ رَبَّ النَّاسِ، وَاشْفِ أَنْتَ الشَّافِي، لَا شِفَاءَ إِلَّا شِفَاؤُكَ، شِفَاءً لَا يُغَادِرُ سَقَمًا",n:"7 مرات"},
+   {t:"أَعُوذُ بِاللهِ وَقُدْرَتِهِ مِنْ شَرِّ مَا أَجِدُ وَأُحَاذِرُ",n:"مرة واحدة"},
+   {t:"عند زيارة المريض: لَا بَأْسَ، طَهُورٌ إِنْ شَاءَ اللهُ",n:"مرة واحدة"},
+   {t:"اللَّهُمَّ رَبَّ النَّاسِ أَذْهِبِ الْبَأْسَ",n:"3 مرات"}
+  ],
+  anger:[
+   {t:"أَعُوذُ بِاللهِ مِنَ الشَّيْطَانِ الرَّجِيمِ — ثم قل: اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنْ نَفْسٍ لَا تَشْبَعُ",n:"مرة واحدة"},
+   {t:"إِذَا غَضِبَ أَحَدُكُمْ وَهُوَ قَائِمٌ فَلْيَجْلِسْ، وَإِنْ لَمْ يَغْتَبْ فَلْيَتْكَئْ — مع أَعُوذُ بِاللهِ مِنَ الشَّيْطَانِ",n:"مرة واحدة"},
+   {t:"اللَّهُمَّ اغْفِرْ لِي ذَنْبِي، وَأَذْهِبْ غَيْظَ قَلْبِي، وَأَجِرْنِي مِنَ الْمُضِلَّاتِ",n:"مرة واحدة"}
   ]
 };
 const AYAT=[
@@ -977,7 +1117,28 @@ const AYAT=[
  {t:"«إِنَّ اللَّهَ مَعَ الَّذِينَ اتَّقَوا وَّالَّذِينَ هُم مُّحْسِنُونَ»",r:"النحل 128"},
  {t:"«وَالصَّابِرِينَ وَالصَّادِقِينَ وَالْقَانِتِينَ وَالْمُنفِقِينَ وَالْمُسْتَغْفِرِينَ بِالْأَسْحَارِ»",r:"آل عمران 17"},
  {t:"«فَاذْكُرُونِي أَذْكُرْكُمْ»",r:"البقرة 152"},
- {t:"«وَقَالَ رَبُّكُمُ ادْعُونِي أَسْتَجِبْ لَكُمْ»",r:"غافر 60"}
+ {t:"«وَقَالَ رَبُّكُمُ ادْعُونِي أَسْتَجِبْ لَكُمْ»",r:"غافر 60"},
+  {t:"«أَمَّنْ هُوَ قَانِتٌ آنَاءَ اللَّيْلِ سَاجِدًا وَقَائِمًا يَحْذَرُ الْآخِرَةَ وَيَرْجُو رَحْمَةَ رَبِّهِ»",r:"الزمر 9"},
+  {t:"«وَاسْتَعِينُوا بِالصَّبْرِ وَالصَّلَاةِ وَإِنَّهَا لَكَبِيرَةٌ إِلَّا عَلَى الْخَاشِعِينَ»",r:"البقرة 45"},
+  {t:"«قُلْ لِلَّهِ الْمَشْرِقُ وَالْمَغْرِبُ»",r:"البقرة 142"},
+  {t:"«وَأَنِ اسْتَغْفِرُوا رَبَّكُمْ ثُمَّ تُوبُوا إِلَيْهِ يُمَتِّعْكُمْ مَتَاعًا حَسَنًا»",r:"هود 3"},
+  {t:"«وَإِذَا أَنْعَمْنَا عَلَى الْإِنسَانِ أَعْرَضَ وَنَأَى بِجَانِبِهِ»",r:"الإسراء 83"},
+  {t:"«رَبَّنَا أَفْرِغْ عَلَيْنَا صَبْرًا وَثَبِّتْ أَقْدَامَنَا»",r:"البقرة 250"},
+  {t:"«فَاصْبِرْ إِنَّ وَعْدَ اللَّهِ حَقٌّ»",r:"الروم 60"},
+  {t:"«وَقَالَ مُوسَىٰ إِن تَكْفُرُوا أَنتُمْ وَمَن فِي الْأَرْضِ جَمِيعًا فَإِنَّ اللَّهَ لَغَنِيٌّ حَمِيدٌ»",r:"إبراهيم 8"},
+  {t:"«يَا أَيُّهَا الَّذِينَ آمَنُوا اذْكُرُوا اللَّهَ ذِكْرًا كَثِيرًا وَسَبِّحُوهُ بُكْرَةً وَأَصِيلًا»",r:"الأحزاب 41-42"},
+  {t:"«ادْخُلُوهَا بِسَلَامٍ ذَٰلِكَ يَوْمُ الْخُلُودِ»",r:"ق 34"},
+  {t:"«مَنْ عَمِلَ صَالِحًا مِّن ذَكَرٍ أَوْ أُنثَىٰ وَهُوَ مُؤْمِنٌ فَلَنُحْيِيَنَّهُ حَيَاةً طَيِّبَةً»",r:"النحل 97"},
+  {t:"«وَسَارِعُوا إِلَىٰ مَغْفِرَةٍ مِّن رَّبِّكُمْ وَجَنَّةٍ عَرْضُهَا السَّمَاوَاتُ وَالْأَرْضُ»",r:"آل عمران 133"},
+  {t:"«وَالْعَصْرِ إِنَّ الْإِنسَانَ لَفِي خُسْرٍ إِلَّا الَّذِينَ آمَنُوا وَعَمِلُوا الصَّالِحَاتِ»",r:"العصر 1-3"},
+  {t:"«فَاذْكُرُونِي أَذْكُرْكُمْ»",r:"البقرة 152"},
+  {t:"«قُلْ يَا عِبَادِيَ الَّذِينَ أَسْرَفُوا عَلَىٰ أَنفُسِهِمْ لَا تَقْنَطُوا مِن رَّحْمَةِ اللَّهِ»",r:"الزمر 53"},
+  {t:"«وَأَوْفُوا بِعَهْدِ اللَّهِ إِذَا عَاهَدتُّمْ»",r:"النحل 91"},
+  {t:"«وَلَقَدْ يَسَّرْنَا الْقُرْآنَ لِلذِّكْرِ فَهَلْ مِن مُّدَّكِرٍ»",r:"القمر 17"},
+  {t:"«رَبِّ إِنِّي مَسَّنِيَ الضُّرُّ وَأَنتَ أَرْحَمُ الرَّاحِمِينَ»",r:"الأنبياء 83"},
+  {t:"«كَلَّا إِذَا دُكَّتِ الْأَرْضُ دَكًّا دَكًّا»",r:"الفجر 21"},
+  {t:"«فَإِذَا فَرَغْتَ فَانصَبْ وَإِلَىٰ رَبِّكَ فَارْغَبْ»",r:"الشرح 7-8"},
+  {t:"«وَأَنذِرْهُمْ يَوْمَ الْحَسْرَةِ إِذْ قُضِيَ الْأَمْرُ»",r:"مريم 39"}
 ];
 
 /* ============================= الحالة ============================= */
@@ -1172,7 +1333,7 @@ ar:{
   tableLoading:"⏳ جارٍ جلب أوقات الشهر من الإنترنت...",tableFail:"تعذّر جلب الأوقات من الإنترنت — سيُعاد جلبها تلقائياً كل 30 ثانية",
   tableEmpty:"لا توجد أوقات لهذا الشهر — تأكد من الاتصال بالإنترنت أو انتظر الجلب التلقائي",
   tableDays:"{0} يوم — أوقات محسوبة تلقائياً لمدينة {1}، {2}",
-  duaTitle:"📿 دعاء ما بعد الأذان",azkMorning:"🌅 أذكار الصباح",azkEvening:"🌇 أذكار المساء",
+  duaTitle:"📿 دعاء ما بعد الأذان",duaDayTitle:"🤲 دعاء اليوم",azkAuto:"تلقائي (صباح/مساء)",azkMorning:"🌅 أذكار الصباح",azkEvening:"🌇 أذكار المساء",
   foot:"أوقات محسوبة تلقائياً لمدينة الشارقة · الإمارات · مع إمكانية التعديل اليدوي لجميع السنوات",
   btnPlayAdhan:"▶ تشغيل الأذان",btnClose:"إغلاق ✕",
   alertAdhan:"🕌 حان وقت الأذان: {0}",alertIqama:"⏰ حان وقت الإقامة: {0}",alertLead:"⏳ الإقامة {0} بعد {1} دقيقة ({2})",
@@ -1198,7 +1359,7 @@ en:{
   tableLoading:"⏳ Fetching month times from the internet...",tableFail:"Couldn't fetch times — will retry automatically every 30 seconds",
   tableEmpty:"No times for this month — check internet or wait for auto-refresh",
   tableDays:"{0} days — automatic times for {1}, {2}",
-  duaTitle:"📿 Dua after adhan",azkMorning:"🌅 Morning adhkar",azkEvening:"🌇 Evening adhkar",
+  duaTitle:"📿 Dua after adhan",duaDayTitle:"🤲 Dua of the day",azkAuto:"Auto (morning/evening)",azkMorning:"🌅 Morning adhkar",azkEvening:"🌇 Evening adhkar",
   foot:"Automatic prayer times for Sharjah · UAE · with manual editing for all years",
   btnPlayAdhan:"▶ Play adhan",btnClose:"Close ✕",
   alertAdhan:"🕌 Adhan time: {0}",alertIqama:"⏰ Iqama time: {0}",alertLead:"⏳ {0} iqama in {1} minutes ({2})",
@@ -1224,7 +1385,7 @@ ur:{
   tableLoading:"⏳ مہینے کے اوقات انٹرنیٹ سے لائے جا رہے ہیں...",tableFail:"اوقات حاصل نہیں ہوئے — ہر 30 سیکنڈ میں خودکار طور پر دوبارہ کوشش",
   tableEmpty:"اس مہینے کے کوئی اوقات نہیں — انٹرنیٹ چیک کریں یا خودکار تازہ کاری کا انتظار کریں",
   tableDays:"{0} دن — {1}، {2} کے خودکار اوقات",
-  duaTitle:"📿 اذان کے بعد کی دعا",azkMorning:"🌅 صبح کے اذکار",azkEvening:"🌇 شام کے اذکار",
+  duaTitle:"📿 اذان کے بعد کی دعا",duaDayTitle:"🤲 آج کی دعا",azkAuto:"خودکار (صبح/شام)",azkMorning:"🌅 صبح کے اذکار",azkEvening:"🌇 شام کے اذکار",
   foot:"شارجہ کے خودکار نماز کے اوقات · متحدہ عرب امارات · تمام سالوں کے لیے دستی ترمیم",
   btnPlayAdhan:"▶ اذان چلائیں",btnClose:"بند کریں ✕",
   alertAdhan:"🕌 اذان کا وقت: {0}",alertIqama:"⏰ اقامت کا وقت: {0}",alertLead:"⏳ {0} کی اقامت {1} منٹ بعد ({2})",
@@ -1251,15 +1412,52 @@ const GREETINGS={
   ur:{dawn:["🌅 صبح بخیر — اللہ کی مدد سے اچھا دن ہو","🌅 صبح بخیر، دن کا آغاز ذکر سے کریں","🌅 دن مبارک ہو اور دل مطمئن"],noon:["🌤️ اللہ آپ کے کاموں میں برکت دے","🌤️ دوپہر مبارک","🌤️ سلام ہو، توانائی سے آگے بڑھیں"],evening:["🌇 شام بخیر اور برکت ہو","🌇 شام مبارک، اللہ توفیق دے","🌇 بہترین عمل وہ ہے جو جاری رہے"],night:["🌙 پرامن رات، اللہ کو یاد کریں","🌙 اللہ آپ کو محفوظ رکھے","🌙 اللہ کا ذکر رات کی راحت ہے"]}
 };
 const DAILY_TIPS={
-  ar:["أداء الصلاة في أول وقتها من أحب الأعمال إلى الله","الاستغفار مفتاح الرزق والبركة — أكثروا منه","آية الكرسي بعد كل صلاة من أسباب دخول الجنة","سورة الملك تنجي من عذاب القبر — اجعلوها وردكم","صيام أيام البيض (١٣-١٥) عمل يسير وأجره عظيم","صلاة الضحى تعدل ٣٦٠ صدقة — لا تنسوها","تبسمك في وجه زميلك صدقة","من صلّى البردين (الفجر والعصر) دخل الجنة","لا تغضب، فمن كفّ غضبه سكن فؤاده","اختموا يومكم بالصلاة على النبي ﷺ","وقّروا كباركم وصلوا أرحامكم","دعاء الوالدين مستجاب — لا تحرموا أنفسكم","اجعلوا «ربنا تقبل منا» ورد دعائكم بعد كل صلاة","أقلّوا من اللغو وأكثروا من ذكر الله","المحافظة على الوضوء من سنن الأنبياء","أذكار الصباح والمساء حصن لكم من كل سوء"],
-  en:["Praying at the start of its time is among the most beloved deeds to Allah","Seeking forgiveness opens the doors of provision and blessing","Ayat al-Kursi after every prayer is a path to Paradise","Surah Al-Mulk protects from the torment of the grave","Fasting the white days (13-15) is easy and greatly rewarded","Duha prayer equals 360 charities — do not forget it","Your smile to your colleague is charity","Whoever prays the two cold ones (Fajr & Asr) enters Paradise","Do not get angry; controlling anger brings peace","End your day with salawat upon the Prophet ﷺ","Respect your elders and keep family ties","Parents' dua is answered — do not deprive yourselves","Make 'Our Lord, accept from us' your supplication after every prayer","Less idle talk, more remembrance of Allah","Maintaining wudu is the way of the prophets","Morning and evening adhkar are your shield from all harm"],
-  ur:["وقت پر نماز ادا کرنا اللہ کو سب سے زیادہ محبوب عمل ہے","استغفار رزق اور برکت کی کلید ہے","ہر نماز کے بعد آیت الکرسی جنت کا ذریعہ ہے","سورۃ الملک قبر کے عذاب سے نجات دیتی ہے","ایام بیض (13-15) کا روزہ آسان اور ثواب میں بڑا ہے","چاشت کی نماز 360 صدقات کے برابر ہے","ساتھی کے سامنے مسکرانا صدقہ ہے","جو فجر اور عصر پڑھے گا وہ جنت میں داخل ہوگا","غصہ نہ کریں، غصہ پر قابو دلوں کو سکون دیتا ہے","دن کا اختتام درود شریف سے کریں","بزرگوں کا احترام اور صلہ رحمی کریں","والدین کی دعا قبول ہوتی ہے","ہر نماز کے بعد «ربنا تقبل منا» کہیں","فضول گفتگو کم کریں اور ذکر زیادہ کریں","وضو کی حفاظت انبیاء کا طریقہ ہے","صبح و شام کے اذکار آپ کی ڈھال ہیں"]
+  ar:["أداء الصلاة في أول وقتها من أحب الأعمال إلى الله","الاستغفار مفتاح الرزق والبركة — أكثروا منه","آية الكرسي بعد كل صلاة من أسباب دخول الجنة","سورة الملك تنجي من عذاب القبر — اجعلوها وردكم","صيام أيام البيض (١٣-١٥) عمل يسير وأجره عظيم","صلاة الضحى تعدل ٣٦٠ صدقة — لا تنسوها","تبسمك في وجه زميلك صدقة","من صلّى البردين (الفجر والعصر) دخل الجنة","لا تغضب، فمن كفّ غضبه سكن فؤاده","اختموا يومكم بالصلاة على النبي ﷺ","وقّروا كباركم وصلوا أرحامكم","دعاء الوالدين مستجاب — لا تحرموا أنفسكم","اجعلوا «ربنا تقبل منا» ورد دعائكم بعد كل صلاة","أقلّوا من اللغو وأكثروا من ذكر الله","المحافظة على الوضوء من سنن الأنبياء","أذكار الصباح والمساء حصن لكم من كل سوء","ساعة الاستجابة يوم الجمعة — أكثروا فيها من الدعاء","صلاة الوتر قربة عظيمة — اجعلوا لها ورداً كل ليلة","الصدقة في السر تطفئ الخطايا كما يطفئ الماء النار","حسن الخلق أثقل ما يكون في ميزان المؤمن","من قرأ سورة الكهف يوم الجمعة أضاء له نور بين الجمعتين","التبكير إلى المسجد والصلاة في الصف الأول من أعظم الغنائم","صلة الرحم تطيل العمر وتزيد الرزق","ورد القرآن اليومي ولو ثلاث آيات خير من هجره","أحسن الظن بالله فما ظنّ عبدٍ به إلا أحقَّه","صنعة اللسان ترتفع بالصدق وتنخفض بالكذب","لا تدع مجالسة الأخيار ولو ساعة — مجلس الذكر روضة من رياض الجنة","قصر الأمل وذكر الموت يورث العمل الصالح","القناعة كنز لا يفنى — رضا بما قسم الله","تغيير النية البسيطة يحول العادة إلى عبادة: اجعلوا طعامكم ونومكم طاعة"],
+  en:["Praying at the start of its time is among the most beloved deeds to Allah","Seeking forgiveness opens the doors of provision and blessing","Ayat al-Kursi after every prayer is a path to Paradise","Surah Al-Mulk protects from the torment of the grave","Fasting the white days (13-15) is easy and greatly rewarded","Duha prayer equals 360 charities — do not forget it","Your smile to your colleague is charity","Whoever prays the two cold ones (Fajr & Asr) enters Paradise","Do not get angry; controlling anger brings peace","End your day with salawat upon the Prophet ﷺ","Respect your elders and keep family ties","Parents' dua is answered — do not deprive yourselves","Make 'Our Lord, accept from us' your supplication after every prayer","Less idle talk, more remembrance of Allah","Maintaining wudu is the way of the prophets","Morning and evening adhkar are your shield from all harm","Make most of Friday's hour of response with dua","Witr prayer is a great act — keep a daily share of it","Secret charity extinguishes sins like water extinguishes fire","Good character is the heaviest thing in the believer's scale","Whoever reads Surah Al-Kahf on Friday is illumined until the next Friday","Going early to the mosque and praying in the first row are great gains","Ties of kinship lengthen life and increase provision","A daily Quran share, even three verses, is better than abandoning it","Think well of Allah, for He grants what His servant expects","Truth elevates speech, falsehood lowers it","Never miss righteous company — a circle of remembrance is a garden of Paradise","Short ambition and remembering death produce righteous deeds","Contentment is an inexhaustible treasure","With a simple intention, habits become worship"],
+  ur:["وقت پر نماز ادا کرنا اللہ کو سب سے زیادہ محبوب عمل ہے","استغفار رزق اور برکت کی کلید ہے","ہر نماز کے بعد آیت الکرسی جنت کا ذریعہ ہے","سورۃ الملک قبر کے عذاب سے نجات دیتی ہے","ایام بیض (13-15) کا روزہ آسان اور ثواب میں بڑا ہے","چاشت کی نماز 360 صدقات کے برابر ہے","ساتھی کے سامنے مسکرانا صدقہ ہے","جو فجر اور عصر پڑھے گا وہ جنت میں داخل ہوگا","غصہ نہ کریں، غصہ پر قابو دلوں کو سکون دیتا ہے","دن کا اختتام درود شریف سے کریں","بزرگوں کا احترام اور صلہ رحمی کریں","والدین کی دعا قبول ہوتی ہے","ہر نماز کے بعد «ربنا تقبل منا» کہیں","فضول گفتگو کم کریں اور ذکر زیادہ کریں","وضو کی حفاظت انبیاء کا طریقہ ہے","صبح و شام کے اذکار آپ کی ڈھال ہیں","جمعہ کے دن کی سعادت کی گھڑی میں دعا کریں","وتر کی نماز بڑی قربت ہے — ہر رات اس کا حصہ رکھیں","پوشیدہ صدقہ گناہوں کا کفارہ ہے جیسے پانی آگ کو بجھاتا ہے","حسن خلق مومن کے میزان کا سب سے بھاری عمل ہے","جو جمعہ کو سورۃ کہف پڑھے اسے نور ملتا ہے","مسجد جلدی جانا اور پہلی صف میں نماز بڑی نعمت ہے","صلہ رحمی عمر میں برکت اور رزق کے وسیع ہونے کا ذریعہ ہے","روزانہ قرآن کا ورد رکھیں وہ کم ہو تو بھی","اللہ سے اچھا گمان رکھیں","سچائی گفتگو کو بلندی دیتی ہے","علماء کی مجلس کبھی نہ چھوڑیں","موت کا ذکر زیادہ کریں","قناعت خزانہ ہے — اللہ کے حصے پر راضی رہیں","چھوٹی نیت کھانے سونے کو عبادت بنا دیتی ہے"]
 };
 const AZKAR_COUNT={
-  ar:{"مرة واحدة":"مرة واحدة","3 مرات":"3 مرات","4 مرات":"4 مرات","100 مرة":"100 مرة"},
-  en:{"مرة واحدة":"Once","3 مرات":"3 times","4 مرات":"4 times","100 مرة":"100 times"},
-  ur:{"مرة واحدة":"ایک بار","3 مرات":"3 بار","4 مرات":"4 بار","100 مرة":"100 بار"}
+  ar:{"مرة واحدة":"مرة واحدة","3 مرات":"3 مرات","4 مرات":"4 مرات","7 مرات":"7 مرات","33 مرة":"33 مرة","100 مرة":"100 مرة"},
+  en:{"مرة واحدة":"Once","3 مرات":"3 times","4 مرات":"4 times","7 مرات":"7 times","33 مرة":"33 times","100 مرة":"100 times"},
+  ur:{"مرة واحدة":"ایک بار","3 مرات":"3 بار","4 مرات":"4 بار","7 مرات":"7 بار","33 مرة":"33 بار","100 مرة":"100 بار"}
 };
+const AZK_ORDER=["morning","evening","afterPrayer","sleep","wake","mosque","food","travel","rain","distress","home","sick","anger"];
+const AZK_TITLES={
+  morning:{ar:"أذكار الصباح",en:"Morning Adhkar",ur:"صبح کے اذکار"},
+  evening:{ar:"أذكار المساء",en:"Evening Adhkar",ur:"شام کے اذکار"},
+  afterPrayer:{ar:"أذكار بعد الصلاة",en:"After-Prayer Adhkar",ur:"نماز کے بعد اذکار"},
+  sleep:{ar:"أذكار النوم",en:"Adhkar Before Sleep",ur:"سونے کے اذکار"},
+  wake:{ar:"أذكار الاستيقاظ",en:"Wake-Up Adhkar",ur:"بیداری کے اذکار"},
+  mosque:{ar:"دخول وخروج المسجد",en:"Entering & Leaving the Mosque",ur:"مسجد میں داخلہ و خروج"},
+  food:{ar:"أذكار الطعام",en:"Food Adhkar",ur:"کھانے کے اذکار"},
+  travel:{ar:"أذكار السفر",en:"Travel Adhkar",ur:"سفر کے اذکار"},
+  rain:{ar:"أذكار المطر والرعد",en:"Rain & Thunder Adhkar",ur:"بارش و گرج کے اذکار"},
+  distress:{ar:"الكرب والهمّ",en:"Distress & Worry",ur:"تکلیف اور فکر"},
+  home:{ar:"دخول المنزل وخروجه",en:"Entering & Leaving Home",ur:"گھر میں داخلہ و خروج"},
+  sick:{ar:"المرض وزيارة المريض",en:"Sickness & Visiting the Sick",ur:"بیماری اور عیادت"},
+  anger:{ar:"عند الغضب",en:"When Angry",ur:"غصے کے وقت"}
+};
+const AZK_MENU={ar:"اختر تصنيفاً:",en:"Choose a category:",ur:"زمرہ منتخب کریں:"};
+const DUAS=[
+  {t:"«اللَّهُمَّ رَبَّ هَذِهِ الدَّعْوَةِ التَّامَّةِ، وَالصَّلَاةِ الْقَائِمَةِ، آتِ مُحَمَّدًا الْوَسِيلَةَ وَالْفَضِيلَةَ، وَابْعَثْهُ مَقَامًا مَحْمُودًا الَّذِي وَعَدْتَهُ»",r:"دعاء ما بعد الأذان"},
+  {t:"«اللَّهُمَّ أَعِنِّي عَلَى ذِكْرِكَ وَشُكْرِكَ وَحُسْنِ عِبَادَتِكَ»",r:"دعاء نبوي — رواه أبو داود"},
+  {t:"«رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ»",r:"دعاء قرآني — البقرة 201"},
+  {t:"«رَبِّ اغْفِرْ لِي وَلِوَالِدَيَّ وَلِلْمُؤْمِنِينَ يَوْمَ يَقُومُ الْحِسَابُ»",r:"دعاء سيدنا إبراهيم ﷺ — إبراهيم 41"},
+  {t:"«رَبِّ اشْرَحْ لِي صَدْرِي، وَيَسِّرْ لِي أَمْرِي، وَاحْلُلْ عُقْدَةً مِّن لِّسَانِي»",r:"دعاء سيدنا موسى ﷺ — طه 25-27"},
+  {t:"«لَا إِلَهَ إِلَّا أَنتَ سُبْحَانَكَ إِنِّي كُنتُ مِنَ الظَّالِمِينَ»",r:"دعاء ذي النون ﷺ — الأنبياء 87"},
+  {t:"«اللَّهُمَّ إِنِّي أَسْأَلُكَ الْهُدَى وَالتُّقَى وَالْعَفَافَ وَالْغِنَى»",r:"دعاء نبوي — رواه مسلم"},
+  {t:"«اللَّهُمَّ إِيَّاكَ نَعْبُدُ وَلَكَ نُصَلِّي وَنَسْجُدُ، وَإِلَيْكَ نَسْعَى وَنَحْفِدُ»",r:"من دعاء القنوت"},
+  {t:"«اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنْ عِلْمٍ لَا يَنْفَعُ، وَمِنْ قَلْبٍ لَا يَخْشَعُ، وَمِنْ نَفْسٍ لَا تَشْبَعُ، وَمِنْ دَعْوَةٍ لَا يُسْتَجَابُ لَهَا»",r:"دعاء نبوي — رواه مسلم"},
+  {t:"«رَبِّ اجْعَلْنِي مُقِيمَ الصَّلَاةِ وَمِن ذُرِّيَّتِي رَبَّنَا وَتَقَبَّلْ دُعَاءِ»",r:"دعاء سيدنا إبراهيم ﷺ — إبراهيم 40"},
+  {t:"«اللَّهُمَّ بَارِكْ لَنَا فِيمَا رَزَقْتَنَا وَقِنَا عَذَابَ النَّارِ»",r:"دعاء نبوي — رواه مسلم"},
+  {t:"«اللَّهُمَّ إِنِّي أَسْأَلُكَ مِنَ الْخَيْرِ كُلِّهِ عَاجِلِهِ وَآجِلِهِ، وَأَعُوذُ بِكَ مِنَ الشَّرِّ كُلِّهِ عَاجِلِهِ وَآجِلِهِ»",r:"دعاء نبوي — رواه أبو داود"},
+  {t:"«حَسْبِيَ اللهُ لَا إِلَهَ إِلَّا هُوَ عَلَيْهِ تَوَكَّلْتُ وَهُوَ رَبُّ الْعَرْشِ الْعَظِيمِ»",r:"دعاء نبوي له أجر عظيم — رواه أبو داود"},
+  {t:"«اللَّهُمَّ لَكَ الْحَمْدُ كَمَا يَنْبَغِي لِجَلَالِ وَجْهِكَ وَعَظِيمِ سُلْطَانِكَ»",r:"دعاء بين السجدتين — رواه مسلم"},
+  {t:"«اللَّهُمَّ تَقَبَّلْ صَلَاتَنَا وَصِيَامَنَا وَقِيَامَنَا وَخُشُوعَنَا، وارحم ضعفنا»",r:"دعاء جامع"},
+  {t:"«رَبِّ قَدْ آتَيْتَنِي مِنَ الْمُلْكِ وَعَلَّمْتَنِي مِن تَأْوِيلِ الْأَحَادِيثِ فَاطِرَ السَّمَاوَاتِ وَالْأَرْضِ أَنتَ وَلِيِّي فِي الدُّنْيَا وَالْآخِرَةِ»",r:"دعاء سيدنا يوسف ﷺ — يوسف 101"},
+  {t:"«اللَّهُمَّ أَصْلِحْ لِي دِينِي الَّذِي هُوَ عِصْمَةُ أَمْرِي، وَأَصْلِحْ لِي دُنْيَايَ الَّتِي فِيهَا مَعَاشِي»",r:"دعاء نبوي — رواه مسلم"},
+  {t:"«اللَّهُمَّ اجْعَلْ خَيْرَ عَمَلِي خَوَاتِيمَهُ، وَخَيْرَ أَيَّامِي يَوْمَ لِقَائِكَ»",r:"دعاء جامع من جوامع الكلم"}
+];
 let lang=(function(){
   try{const s=localStorage.getItem(LANG_KEY);if(s==="ar"||s==="en"||s==="ur")return s}catch(e){}
   const n=(navigator.language||"ar").toLowerCase();
@@ -1613,7 +1811,7 @@ function render(){
   const events=buildEvents(ds);
   const next=nextMain(ds,events,now);
   const key=ds+"|"+(next.adhan?next.adhan.time+"|"+next.adhan.prayer:"-")+"|"+(next.iqama?next.iqama.time+"|"+next.iqama.prayer:"-")+"|"+(viewYM?viewYM.y+"-"+viewYM.m:"")+"-"+viewYear;
-  if(key!==lastRenderKey){lastRenderKey=key;renderCards(ds,events);renderTable()}
+  if(key!==lastRenderKey){lastRenderKey=key;renderCards(ds,events);renderTable();window.AndroidUpdater&&pushSchedule()}
   renderClock(now);
   renderCountdown(next,now);
   renderNowBox(now,ds);
@@ -1842,19 +2040,44 @@ function pickAyah(){
   renderAyTimer();
 }
 let azkWhich="";
-function renderAzkar(){
-  const h=new Date().getHours();
-  const want=h>=4&&h<12?"morning":"evening";
-  if(azkWhich===want)return;
-  azkWhich=want;
-  const isM=want==="morning";
-  $("azkTitle").textContent=isM?T("azkMorning"):T("azkEvening");
+let azkLang="";
+let azkSelKey=(function(){try{return localStorage.getItem("prayerApp_v3_azkcat")||"auto";}catch(e){return "auto";}})();
+let azkFillLang="";
+function fillAzkCats(){
+  const el=$("azkCat");if(!el)return;
+  if(azkFillLang===lang&&el.options&&el.options.length===AZK_ORDER.length+1)return;
+  el.innerHTML='<option value="auto">'+T("azkAuto")+'</option>';
+  for(const k of AZK_ORDER)el.innerHTML+='<option value="'+k+'">'+AZK_TITLES[k][lang]+'</option>';
+  el.value=azkSelKey;
+  azkFillLang=lang;
+}
+document.addEventListener("change",function(ev){
+  if(ev.target&&ev.target.id==="azkCat"){
+    azkSelKey=ev.target.value;
+    try{localStorage.setItem("prayerApp_v3_azkcat",azkSelKey);}catch(e){}
+    renderAzkar(true);
+  }
+});
+function renderAzkar(force){
+  fillAzkCats();
+  const isMhour=(new Date().getHours()>=4)&&(new Date().getHours()<12);
+  let key=azkSelKey&&azkSelKey!=="auto"?azkSelKey:(isMhour?"morning":"evening");
+  if(!force&&azkWhich===key&&azkLang===lang)return;
+  azkWhich=key;azkLang=lang;
+  $("azkTitle").textContent=(key==="morning"||key==="evening")?T(key==="morning"?"azkMorning":"azkEvening"):(AZK_TITLES[key][lang]||key);
   let html="";
   const counts=AZKAR_COUNT[lang]||AZKAR_COUNT.ar;
-  for(const z of AZKAR[want]){
+  for(const z of AZKAR[key]||[]){
     html+='<div class="azk-item"><div class="azk-text">'+z.t+'</div><div class="azk-count">'+(counts[z.n]||z.n)+'</div></div>';
   }
   $("azkList").innerHTML=html;
+}
+function renderDuaDay(){
+  const el=$("duaDay");if(!el)return;
+  const now=new Date();
+  const d=Math.floor((now-new Date(now.getFullYear(),0,1).getTime())/86400000);
+  const d2=DUAS[d%DUAS.length];
+  el.innerHTML='<div class="azk-text">'+d2.t+'</div><div class="azk-count">'+d2.r+'</div>';
 }
 setInterval(()=>pickHadith(),HADITH_INTERVAL);
 setInterval(()=>pickAyah(),AYAH_INTERVAL);
@@ -2231,7 +2454,7 @@ function updateLocText(){
 function fillUpdateUI(){
   const st=$("updateStatus");
   const br=window.AndroidUpdater;
-  if(!br){if(st)st.textContent="الإصدار 9 — نسخة ويب/عادية: حدّث بنشر الملفات الجديدة على رابطك";return}
+  if(!br){if(st)st.textContent="الإصدار 10 — نسخة ويب/عادية: حدّث بنشر الملفات الجديدة على رابطك";return}
   let cfg={};
   try{cfg=JSON.parse(br.config()||"{}")}catch(e){}
   const u=$("updateUrl");if(u)u.value=cfg.updateUrl||"";
@@ -2253,6 +2476,89 @@ function checkUpdateNow(){
   toast("🔍 جارٍ فحص التحديثات...");
   window.AndroidUpdater.checkNow();
 }
+/* ====== الإشعارات الحقيقية على الهاتف (نسخة Android) ====== */
+let NOTIF_SETTINGS={master:false,adhan:true,iqama:true,lead:true};
+(function(){try{const s=JSON.parse(localStorage.getItem("prayerApp_v3_notif"));if(s&&typeof s==="object")NOTIF_SETTINGS=Object.assign(NOTIF_SETTINGS,s);}catch(e){}})();
+function collectSchedule(){
+  const out=[],now=Date.now();
+  const NAMES={Fajr:"الفجر",Dhuhr:"الظهر",Asr:"العصر",Maghrib:"المغرب",Isha:"العشاء"};
+  for(let i=0;i<2;i++){
+    const d=new Date();d.setDate(d.getDate()+i);
+    const ds=dateStr(d);
+    const dd=getDayData(ds);if(!dd)continue;
+    for(const p of PRAYER_DEFS){
+      const nm=NAMES[p.key]||p.key;
+      const tAdhan=dd[p.key];
+      const tIqama=dd[p.key+"I"];
+      if(tAdhan){
+        const ep=Date.parse(ds+"T"+tAdhan+":00");
+        if(ep>now)out.push({id:ds+"|"+p.key+"|adhan",epoch:ep,kind:"adhan",title:"🔊 حان وقت صلاة "+nm,text:"وقت الأذان — "+tAdhan});
+      }
+      if(tIqama){
+        const ep=Date.parse(ds+"T"+tIqama+":00");
+        if(ep>now)out.push({id:ds+"|"+p.key+"|iqama",epoch:ep,kind:"iqama",title:"🕌 قامت الصلاة — "+nm,text:"الإقامة — "+tIqama});
+        if(NOTIF_SETTINGS.lead&&cfg.lead&&cfg.iqamaLead>0){
+          const lep=ep-cfg.iqamaLead*60000;
+          const tLead=new Date(lep);const hh=pad(tLead.getHours())+":"+pad(tLead.getMinutes());
+          if(lep>now)out.push({id:ds+"|"+p.key+"|lead",epoch:lep,kind:"lead",title:"⏰ صلاة "+nm+" بعد "+cfg.iqamaLead+" د",text:"حان وقت صلاة "+nm+" الساعة "+tAdhan+" · إقامة "+tIqama+" ("+hh+")"});
+        }
+      }
+    }
+  }
+  return out;
+}
+function readNotifSettings(){
+  NOTIF_SETTINGS.master=$("notifMaster").checked;
+  NOTIF_SETTINGS.adhan=$("notifAdhan").checked;
+  NOTIF_SETTINGS.iqama=$("notifIqama").checked;
+  NOTIF_SETTINGS.lead=$("notifLead").checked;
+  try{localStorage.setItem("prayerApp_v3_notif",JSON.stringify(NOTIF_SETTINGS))}catch(e){}
+}
+function notifStatusText(){
+  const br=window.AndroidUpdater;if(!br)return "التطبيق يعمل بنسخة ويب — هذه الميزة متاحة في نسخة Android";
+  let c={};try{c=JSON.parse(br.notifyConfig()||"{}")}catch(e){}
+  const perm=c.permission==="granted"?"ممنوح ✓":(c.permission==="denied"?"مرفوض — فعّله من إعدادات الهاتف":"غير معلوم — اطلب الإذن أولاً");
+  return "إذن الإشعارات: "+perm+" · "+(c.exact?"تنبيهات دقيقة ✓":"تنبيهات قد تتأخر (المانع مفعّل)")+" · "+(c.scheduled>0?("مجدولة: "+c.scheduled+" إشعاراً"):(NOTIF_SETTINGS.master?"· لا يوجد جدول بعد":"· الإشعارات مطفأة"));
+}
+function fillNotifUI(){
+  const st=$("notifStatus");
+  if(!window.AndroidUpdater){if(st)st.textContent="تعمل هذه الميزة في نسخة Android المثبّتة على الهاتف؛ اضغطوا على «طلب إذن الإشعارات» ثم «مزامنة الجدول»";return}
+  $("notifMaster").checked=NOTIF_SETTINGS.master;
+  $("notifAdhan").checked=NOTIF_SETTINGS.adhan;
+  $("notifIqama").checked=NOTIF_SETTINGS.iqama;
+  $("notifLead").checked=NOTIF_SETTINGS.lead;
+  const lm=$("notifLeadMin");if(lm)lm.textContent=cfg.iqamaLead;
+  if(st)st.textContent=notifStatusText();
+}
+function pushSchedule(){
+  const br=window.AndroidUpdater;if(!br)return;
+  readNotifSettings();
+  const evs=NOTIF_SETTINGS.master?collectSchedule():[];
+  try{br.setSchedule(JSON.stringify({settings:NOTIF_SETTINGS,events:evs}))}catch(e){}
+  const st=$("notifStatus");if(st)st.textContent=notifStatusText();
+}
+function syncNotif(){
+  if(!window.AndroidUpdater){toast("✖ مزامنة الجدول متاحة داخل نسخة Android فقط","err");return}
+  pushSchedule();
+  toast("✔ تمت مزامنة جدول الإشعارات");
+}
+function requestNotifPerm(){
+  if(!window.AndroidUpdater){toast("✖ متاح داخل نسخة Android فقط","err");return}
+  window.AndroidUpdater.requestNotifyPermission();
+  toast("🔔 أُرسل طلب الإذن — وافق عليه من النافذة");
+}
+function testNotif(){
+  if(!window.AndroidUpdater){toast("✖ متاح داخل نسخة Android فقط","err");return}
+  window.AndroidUpdater.postTestNotification();
+  toast("🧪 يتم إرسال إشعار تجريبي...");
+}
+function _bindNotif(){
+  ["notifMaster","notifAdhan","notifIqama","notifLead"].forEach(function(id){const el=$(id);if(el)el.addEventListener("change",function(){pushSchedule()})});
+  const s=$("notifSync"),p=$("notifPerm"),t=$("notifTest");
+  if(s)s.addEventListener("click",syncNotif);
+  if(p)p.addEventListener("click",requestNotifPerm);
+  if(t)t.addEventListener("click",testNotif);
+}
 function openSettings(){
   $("settingsOverlay").classList.add("open");
   loadSettings();
@@ -2268,6 +2574,7 @@ function loadSettings(){
     $("mMaghrib").value=d.Maghrib; $("mIsha").value=d.Isha;
   }
   fillUpdateUI();
+  fillNotifUI();
   $("iFajr").value=IQAMA_OFFSET.Fajr; $("iDhuhr").value=IQAMA_OFFSET.Dhuhr;
   $("iAsr").value=IQAMA_OFFSET.Asr; $("iMaghrib").value=IQAMA_OFFSET.Maghrib;
   $("iIsha").value=IQAMA_OFFSET.Isha;
@@ -2439,6 +2746,8 @@ $("volControl").addEventListener("change",e=>{
 $("leadMin").addEventListener("change",e=>{
   cfg.iqamaLead=Math.max(0,Math.min(30,parseInt(e.target.value)||7));
   $("leadVal").textContent=cfg.iqamaLead+" دقائق قبل";
+  const lm=$("notifLeadMin");if(lm)lm.textContent=cfg.iqamaLead;
+  pushSchedule();
 });
 $("toggleLead").onclick=function(){cfg.lead=!cfg.lead;this.classList.toggle("on",cfg.lead)};
 $("toggleSRemind").onclick=function(){
@@ -2517,10 +2826,13 @@ try{
 applyLang();
 updateLocText();
 fillUpdateUI();
+_bindNotif();
+fillNotifUI();
 const _n=new Date();
 viewYM={y:_n.getFullYear(),m:_n.getMonth()};
 viewYear=_n.getFullYear();
 $("duaText").textContent=DUA_AFTER_ADHAN;
+renderDuaDay();
 renderAzkar();
 pickHadith();
 pickAyah();
@@ -2531,7 +2843,7 @@ checkMilestones();
 renderMonthTabs();
 const bootDates=[todayStr()];
 for(let i=1;i<=45;i++){const d=new Date();d.setDate(d.getDate()+i);bootDates.push(dateStr(d))}
-fetchAuto(bootDates).then(()=>{applyManualOverride();render();renderTable()});
+fetchAuto(bootDates).then(()=>{applyManualOverride();render();renderTable();window.AndroidUpdater&&pushSchedule()});
 render();
 renderQuran();
 renderDhikr();
